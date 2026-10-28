@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Builds the 3 static, fully pre-rendered pages from tools/translations.json
+"""Builds the 4 static, fully pre-rendered pages from tools/translations.json
 + tools/index.template.html:
     index.html     -> English (default) https://ajwadateswholesale.vercel.app/
     fr/index.html  -> French            https://ajwadateswholesale.vercel.app/fr/
     es/index.html  -> Spanish           https://ajwadateswholesale.vercel.app/es/
-the 3 privacy pages (/privacy/, /fr/confidentialite/, /es/privacidad/ from
+    pt/index.html  -> Portuguese (pt-PT) https://ajwadateswholesale.vercel.app/pt/
+the 4 privacy pages (/privacy/, /fr/confidentialite/, /es/privacidad/, /pt/privacidade/ from
 tools/privacy.template.html + tools/privacy_content.py) and sitemap.xml (home pages only; privacy pages are noindex). Asset paths are RELATIVE, so index.html also opens with a double-click.
 Usage (from the project folder):  python3 tools/build.py
 """
@@ -12,9 +13,9 @@ import json, html, re, urllib.parse, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://ajwadateswholesale.vercel.app"   # production domain (no trailing slash)
-LANGS = ["en", "fr", "es"]                        # first = default language, served at /
-PATHS = {"en": "/", "fr": "/fr/", "es": "/es/"}
-PRIVACY_PATHS = {"en": "/privacy/", "fr": "/fr/confidentialite/", "es": "/es/privacidad/"}
+LANGS = ["en", "fr", "es", "pt"]                       # first = default language, served at /
+PATHS = {"en": "/", "fr": "/fr/", "es": "/es/", "pt": "/pt/"}
+PRIVACY_PATHS = {"en": "/privacy/", "fr": "/fr/confidentialite/", "es": "/es/privacidad/", "pt": "/pt/privacidade/"}
 CONSENT_KEY = "ajw_cookie_consent_v2"   # must match KEY in js/analytics.js
 LASTMOD = "2026-10-28"
 WA_NUMBER = "212664738219"                        # WhatsApp number (digits only)
@@ -31,7 +32,7 @@ import sys; sys.path.insert(0, str(ROOT / "tools"))
 import privacy_content as PV
 
 # Consent Mode v2 head block (region-specific): denied by default in the EEA, UK and Switzerland, granted
-# elsewhere; one gtag.js (id=AW-…) loaded for everyone. Same block on the 3 home pages and the 3 privacy pages.
+# elsewhere; one gtag.js (id=AW-…) loaded for everyone. Same block on the 4 home pages and the 4 privacy pages.
 # js/analytics.js asks /api/geo (api/geo.js, Vercel geo header) whether to show the banner.
 GA4_ID = "G-B0VQF4YB7S"   # GA4 property 561247163 (account 413401960, stream 16224116734), support@acera.shop
 ADS_ID = "AW-18529460502"
@@ -91,14 +92,14 @@ def org_ld(lang):
                     "contactType": "sales",
                     "telephone": "+" + WA_NUMBER,
                     "url": "https://wa.me/" + WA_NUMBER,
-                    "availableLanguage": ["French", "English", "Spanish"],
+                    "availableLanguage": ["French", "English", "Spanish", "Portuguese"],
                 },
             },
             {
                 "@type": "WebSite",
                 "@id": SITE + "/#website",
                 "name": name,
-                "alternateName": [T["fr"]["site.name"], T["es"]["site.name"]],
+                "alternateName": [T["fr"]["site.name"], T["es"]["site.name"], T["pt"]["site.name"]],
                 "url": SITE + "/",
                 "inLanguage": LANGS,
                 "publisher": {"@id": SITE + "/#organization"},
@@ -150,7 +151,7 @@ HREFLANG = "\n".join(
 
 def lang_links(cur):
     out = []
-    for l in ["en", "fr", "es"]:   # display order EN / FR / ES
+    for l in ["en", "fr", "es", "pt"]:   # display order EN / FR / ES / PT
         attrs = ' aria-current="page"' if l == cur else ''
         out.append(f'          <a href="{rel_link(cur, l)}" hreflang="{l}" lang="{l}"{attrs}>{l.upper()}</a>')
     return "\n".join(out)
@@ -209,7 +210,7 @@ def render_privacy(lang):
     body = "\n".join("      " + ln if ln else ln for ln in body.split("\n"))
     links = "\n".join(
         f'          <a href="{rel_path(cur, PRIVACY_PATHS[l])}" hreflang="{l}" lang="{l}"{" aria-current=\"page\"" if l == lang else ""}>{l.upper()}</a>'
-        for l in ["en", "fr", "es"])
+        for l in ["en", "fr", "es", "pt"])
     s = PV_TPL
     s = s.replace("{{TRACKING_HEAD}}", TRACKING_HEAD)
     s = s.replace("{{PV_BODY}}", body)

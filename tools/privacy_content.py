@@ -1,8 +1,9 @@
-# Privacy policy text (EN / FR / ES), used by tools/build.py for /privacy/, /fr/confidentialite/, /es/privacidad/.
+# Privacy policy text (EN / FR / ES / PT), used by tools/build.py for /privacy/, /fr/confidentialite/, /es/privacidad/, /pt/privacidade/.
 # Modelled on the rosewaterbulk policy. No legal controller name. Region-specific consent: banner and
 # Consent Mode "denied" only in the EEA, the UK and Switzerland. {PHONE} and {KEY} are filled in by build.py.
 UPDATED = {"en": "Last updated: October 28, 2026", "fr": "Dernière mise à jour : 28 octobre 2026",
-           "es": "Última actualización: 28 de octubre de 2026"}
+           "es": "Última actualización: 28 de octubre de 2026",
+           "pt": "Última atualização: 28 de outubro de 2026"}
 
 META = {
     "en": {"title": "Privacy policy | Ajwa Dates Wholesale",
@@ -14,6 +15,9 @@ META = {
     "es": {"title": "Política de privacidad | Dátiles Ajwa al por Mayor",
            "description": "Cómo el sitio Dátiles Ajwa al por Mayor usa cookies de Google Analytics y Google Ads, para medir las visitas y los contactos por WhatsApp, el consentimiento que se pide en el EEE, el Reino Unido y Suiza, y cómo oponerse.",
            "h1": "Política de privacidad", "back": "Volver a la página de inicio", "manage": "Gestionar mis opciones de cookies"},
+    "pt": {"title": "Política de privacidade | Tâmaras Ajwa por Grosso",
+           "description": "Como o site Tâmaras Ajwa por Grosso usa cookies do Google Analytics e do Google Ads para medir as visitas e os contactos por WhatsApp, o consentimento pedido no EEE, no Reino Unido e na Suíça, e como se opor.",
+           "h1": "Política de privacidade", "back": "Voltar à página inicial", "manage": "Gerir as minhas opções de cookies"},
 }
 
 BODY = {
@@ -211,5 +215,70 @@ BODY = {
 
 <h2>8. Cambios</h2>
 <p>Esta política puede actualizarse, por ejemplo si se añaden nuevas herramientas al sitio. La fecha de la última actualización figura al principio de esta página.</p>
+""",
+"pt": """
+<p>Esta página explica que dados são recolhidos quando visita o site Tâmaras Ajwa por Grosso ({SITE}/), porquê, durante quanto tempo são conservados e como exercer os seus direitos.</p>
+
+<h2>1. Quem é responsável pelos seus dados?</h2>
+<p>O responsável pelo tratamento é o editor do site Tâmaras Ajwa por Grosso. Para qualquer questão sobre os seus dados, contacte-nos no WhatsApp através do <a href="{WA}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="privacy">{PHONE}</a>.</p>
+
+<h2>2. Que dados são recolhidos?</h2>
+<p>Este site não tem formulários, contas de cliente nem pagamentos online. Os únicos dados recolhidos no site provêm da medição de audiência do <strong>Google Analytics&nbsp;4</strong> e da medição publicitária do <strong>Google Ads</strong>, usadas para medir as visitas e os contactos por WhatsApp. Aos visitantes do Espaço Económico Europeu, do Reino Unido e da Suíça é pedido primeiro o consentimento:</p>
+<ul>
+  <li>as páginas que consulta, a data e a duração da visita e a página de onde veio (motor de pesquisa, rede social, link direto);</li>
+  <li>informações técnicas: tipo de dispositivo, sistema operativo, navegador, idioma, resolução do ecrã;</li>
+  <li>uma localização aproximada (país, região, cidade), obtida a partir do seu endereço IP. Segundo a Google, o Google Analytics&nbsp;4 não regista nem guarda endereços IP;</li>
+  <li>os cliques nos botões do WhatsApp (o local do botão na página e o endereço do link);</li>
+  <li>um identificador aleatório guardado num cookie, que distingue visitas e visitantes sem saber quem é;</li>
+  <li>se chegar ao site clicando num dos nossos anúncios Google, o identificador desse clique («gclid»), que mostra se a visita vinda do anúncio levou a um clique num botão do WhatsApp (uma «conversão»).</li>
+</ul>
+<p>Estes dados servem para estatísticas de visitas, para perceber como o site é usado e melhorá-lo, e para medir o desempenho dos nossos anúncios (quantas visitas vindas de um anúncio levam a um pedido por WhatsApp). No Espaço Económico Europeu, no Reino Unido e na Suíça, a base legal é o seu consentimento; nos restantes países, é o nosso interesse legítimo em medir e melhorar o site e os nossos anúncios, ao qual se pode opor a qualquer momento (ver secção&nbsp;4).</p>
+<p>O Google Ads pode também usar as suas visitas a este site para lhe mostrar os nossos anúncios noutros sites (remarketing e publicidade personalizada). A nossa propriedade Google Analytics está associada à nossa conta Google Ads para estes fins. Pode desativar isto a qualquer momento (ver secção&nbsp;4).</p>
+
+<h2>3. Cookies e armazenamento local</h2>
+<p>A etiqueta Google (Google Analytics e Google Ads) é carregada em todas as páginas. Se estiver no Espaço Económico Europeu, no Reino Unido ou na Suíça, um banner pede o seu consentimento e, até clicar em «Aceitar» (ou se clicar em «Recusar»), o Modo de Consentimento da Google fica em «negado»: nenhum cookie do Google Analytics ou do Google Ads é criado, nenhum clique no WhatsApp é contado como conversão de anúncio, e a Google só recebe sinais agregados, sem cookies (por exemplo, que uma página foi vista), sem um identificador que o reconheça. Se chegar através de um anúncio, o identificador do clique pode ficar no endereço (URL) das páginas que consultar a seguir, sem ser guardado num cookie. Para saber se deve mostrar o banner, o site verifica o seu país a partir do endereço IP (através do nosso alojamento, a Vercel); este país não é guardado.</p>
+<div class="table-wrap"><table>
+  <thead><tr><th>Nome</th><th>Finalidade</th><th>Duração</th></tr></thead>
+  <tbody>
+    <tr><td><code>_ga</code></td><td>Cookie do Google Analytics: distingue os visitantes (identificador aleatório). No EEE, no Reino Unido e na Suíça: só depois de «Aceitar».</td><td>13&nbsp;meses no máximo</td></tr>
+    <tr><td><code>_ga_&lt;id&gt;</code></td><td>Cookie do Google Analytics: guarda o estado da sessão. No EEE, no Reino Unido e na Suíça: só depois de «Aceitar».</td><td>13&nbsp;meses no máximo</td></tr>
+    <tr><td><code>_gcl_au</code></td><td>Cookie do Google Ads: mede as conversões (cliques no WhatsApp) que vêm dos nossos anúncios. No EEE, no Reino Unido e na Suíça: só depois de «Aceitar».</td><td>90&nbsp;dias</td></tr>
+    <tr><td><code>_gcl_aw</code></td><td>Cookie do Google Ads: guarda o identificador de um clique num dos nossos anúncios (gclid), se tiver chegado através de um anúncio. No EEE, no Reino Unido e na Suíça: só depois de «Aceitar».</td><td>90&nbsp;dias</td></tr>
+    <tr><td><code>{KEY}</code></td><td>Armazenamento local do navegador (não é um cookie): memoriza a sua escolha «Aceitar» ou «Recusar» (EEE, Reino Unido e Suíça) para não lhe perguntarmos em cada página.</td><td>6&nbsp;meses</td></tr>
+  </tbody>
+</table></div>
+
+<h2>4. O seu consentimento e como se opor</h2>
+<p>No Espaço Económico Europeu, no Reino Unido e na Suíça, um banner pede-lhe, na primeira visita, que aceite ou recuse a medição de audiência (Google Analytics) e os cookies de publicidade (Google Ads). Recusar é tão simples como aceitar e não o impede de usar o site. A sua escolha é guardada durante 6&nbsp;meses; depois disso, o banner volta a aparecer. Pode mudar de ideias a qualquer momento: <button type="button" class="link-btn" data-consent-open>{MANAGE}</button> (também disponível no link «Gerir cookies» no fundo de cada página). Se recusar ou retirar o consentimento, os cookies do Google Analytics (<code>_ga</code>…) e do Google Ads (<code>_gcl</code>…) são apagados.</p>
+<p>Esteja onde estiver, pode também opor-se:</p>
+<ul>
+  <li>nas definições do navegador, bloqueando ou apagando os cookies deste site (ou os cookies de terceiros);</li>
+  <li>na sua conta Google, desativando os anúncios personalizados no <a href="https://myadcenter.google.com/" target="_blank" rel="noopener">Meu Centro de Anúncios (definições de anúncios Google)</a>;</li>
+  <li>no caso do Google Analytics, instalando o <a href="https://tools.google.com/dlpage/gaoptout?hl=pt-PT" target="_blank" rel="noopener">extra do navegador para desativação do Google Analytics</a>.</li>
+</ul>
+
+<h2>5. Durante quanto tempo os dados são conservados</h2>
+<ul>
+  <li>Estatísticas do Google Analytics: 14&nbsp;meses no máximo, depois apagadas automaticamente.</li>
+  <li>Cookies do Google Analytics: 13&nbsp;meses no máximo.</li>
+  <li>Cookies do Google Ads: 90&nbsp;dias.</li>
+  <li>A sua escolha de consentimento (EEE, Reino Unido e Suíça): 6&nbsp;meses.</li>
+  <li>Mensagens que nos envia pelo WhatsApp: o tempo necessário para responder ao seu pedido e acompanhar a sua encomenda.</li>
+</ul>
+
+<h2>6. Quem recebe estes dados?</h2>
+<ul>
+  <li><strong>Google</strong> (Google Analytics), como prestador de serviços de medição de audiência, e <strong>Google</strong> (Google Ads), para medir o desempenho dos nossos anúncios e, quando permitido (no EEE, no Reino Unido e na Suíça, com o seu consentimento), para remarketing e publicidade personalizada. No caso do Google Ads, a Google usa também estes dados segundo as suas próprias regras: <a href="https://policies.google.com/technologies/partner-sites?hl=pt-PT" target="_blank" rel="noopener">como a Google usa os dados dos sites que utilizam os seus serviços</a>. Os dados podem ser transferidos para os Estados Unidos; a Google LLC está certificada ao abrigo do Quadro de Privacidade de Dados UE–EUA (Data Privacy Framework).</li>
+  <li><strong>Vercel</strong>, o alojamento do site, que trata os registos técnicos (incluindo endereços IP) necessários ao funcionamento e à segurança do site.</li>
+  <li><strong>WhatsApp</strong>: ao clicar num botão do WhatsApp, sai do site; as mensagens que envia são tratadas pelo WhatsApp segundo a sua própria política de privacidade.</li>
+</ul>
+<p>Nunca vendemos os seus dados pessoais.</p>
+
+<h2>7. Os seus direitos</h2>
+<p>Consoante o local onde vive (por exemplo, na União Europeia, no Reino Unido ou em certos estados dos EUA), pode ter o direito de aceder, retificar, apagar ou receber uma cópia dos seus dados, de se opor ou limitar a sua utilização e de retirar o seu consentimento a qualquer momento. Para exercer estes direitos, envie-nos uma mensagem no WhatsApp ({PHONE}). Como os dados do Google Analytics e do Google Ads são pseudónimos, nem sempre os conseguimos associar a uma pessoa concreta; a opção mais simples é então recusar ou retirar o consentimento, ou usar as opções da secção&nbsp;4, e apagar os seus cookies.</p>
+<p>Se considerar que os seus direitos não foram respeitados, pode apresentar uma reclamação à autoridade de proteção de dados do seu país (em Portugal, a CNPD; no Brasil, a ANPD).</p>
+
+<h2>8. Alterações</h2>
+<p>Esta política pode ser atualizada, por exemplo se forem adicionadas novas ferramentas ao site. A data da última atualização aparece no início desta página.</p>
 """,
 }

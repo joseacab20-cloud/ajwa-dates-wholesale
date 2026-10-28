@@ -1,12 +1,13 @@
-# Ajwa Dates Wholesale — site one-page EN / FR / ES
+# Ajwa Dates Wholesale — site one-page EN / FR / ES / PT
 
-Site vitrine d'une seule page, en trois langues, chacune à sa propre adresse :
+Site vitrine d'une seule page, en quatre langues, chacune à sa propre adresse :
 
 | Langue | Adresse | Mot-clé SEO principal |
 |---|---|---|
 | Anglais (**par défaut**) | `https://ajwadateswholesale.vercel.app/` | « ajwa dates wholesale » |
 | Français | `https://ajwadateswholesale.vercel.app/fr/` | « dattes ajwa en gros » |
 | Espagnol | `https://ajwadateswholesale.vercel.app/es/` | « dátiles ajwa al por mayor » |
+| Portugais (pt-PT) | `https://ajwadateswholesale.vercel.app/pt/` | « tâmaras ajwa por grosso » (et atacado, de Medina, fornecedor) |
 
 > Le site est en ligne sur `ajwadateswholesale.vercel.app` (Vercel). L'ancienne adresse `/en/` redirige vers `/`.
 > S'il change, modifiez `SITE` dans `tools/build.py`, `robots.txt`, puis relancez la génération.
@@ -17,7 +18,7 @@ Objectif : faire contacter le vendeur sur **WhatsApp** (`https://wa.me/212664738
 - Chaque langue est une **vraie page HTML complète** : titre, description, Open Graph / Twitter, `canonical`,
   `hreflang` (en, fr, es, `x-default` → page anglaise), FAQ JSON-LD, textes alternatifs, message WhatsApp
   pré-rempli dans la bonne langue. Google lit chaque version sans JavaScript.
-- Sélecteur **EN / FR / ES** (en-tête et pied de page) = simples liens. Pas de redirection automatique.
+- Sélecteur **EN / FR / ES / PT** (pied de page) = simples liens. Pas de redirection automatique.
 - Bouton WhatsApp flottant + 16 liens WhatsApp par page, tous marqués `data-cta="whatsapp"` et `data-cta-location="…"`.
 - Données structurées : `Organization` + `WebSite` (nom, adresse, WhatsApp uniquement), `FAQPage` par langue.
 - `robots.txt`, `sitemap.xml` (3 adresses + `hreflang`), favicon, image de partage 1200×630.
@@ -36,7 +37,7 @@ et le sélecteur de langue fonctionnent (testé).
 npx serve .
 # ou, sans Node : python3 -m http.server 8000
 ```
-Puis ouvrez l'adresse affichée (ex. http://localhost:3000/ — anglais), `/fr/` et `/es/`.
+Puis ouvrez l'adresse affichée (ex. http://localhost:3000/ — anglais), `/fr/`, `/es/` et `/pt/`.
 
 ---
 
@@ -46,15 +47,16 @@ Puis ouvrez l'adresse affichée (ex. http://localhost:3000/ — anglais), `/fr/`
 index.html                 ← page anglaise (générée)
 fr/index.html              ← page française (générée)
 es/index.html              ← page espagnole (générée)
+pt/index.html              ← page portugaise (générée)
 css/style.css              ← le design (or, brun profond, ambre)
 js/main.js                 ← menu mobile, ombre de l'en-tête, liens de langue en double-clic
 images/                    ← photos WebP optimisées + og-image.jpg + apple-touch-icon.png
 favicon.svg                ← icône du site
 robots.txt, sitemap.xml    ← pour Google (sitemap généré)
 vercel.json                ← adresses propres, /en → / (redirection 308), cache
-tools/translations.json    ← TOUS les textes, en EN / FR / ES
-tools/index.template.html  ← le modèle HTML commun aux 3 pages
-tools/build.py             ← génère les 3 pages + sitemap.xml
+tools/translations.json    ← TOUS les textes, en EN / FR / ES / PT
+tools/index.template.html  ← le modèle HTML commun aux 4 pages
+tools/build.py             ← génère les 4 pages + sitemap.xml
 ```
 
 Sections : en-tête fixe · hero · bandeau de confiance · l'Ajwa de Madinah (`#about-ajwa`) ·
@@ -120,14 +122,14 @@ Le mieux reste de remplacer ces photos par vos propres photos de produits (même
 
 ## Suivi Google Ads + GA4 (Consent Mode v2 par région)
 
-- Bloc `<head>` : `tools/head-block.html`, inséré par `tools/build.py` dans les 3 pages d'accueil et les 3 pages de confidentialité. Il contient :
+- Bloc `<head>` : `tools/head-block.html`, inséré par `tools/build.py` dans les 4 pages d'accueil et les 4 pages de confidentialité. Il contient :
   - un consentement par défaut refusé (les 4 signaux) pour l'EEE, le Royaume-Uni et la Suisse (`region`, `wait_for_update` 500), puis accordé partout ailleurs ;
   - `ads_data_redaction` et `url_passthrough` ;
   - la réapplication du choix enregistré ;
   - la configuration GA4 et `AW-18529460502`, et un seul gtag.js (`id=AW-18529460502`), chargé pour tout le monde.
 - `api/geo.js` (fonction Edge Vercel) renvoie `{"country": x-vercel-ip-country}` (cache privé de 5 min). Il n'y a aucun paramètre pour forcer le pays ; les tests simulent la réponse.
 - `js/analytics.js` appelle `/api/geo` en asynchrone (résultat gardé pour la session).
-  - Le bandeau EN/FR/ES (qui nomme Google Analytics et Google Ads) s'affiche dans l'EEE, au Royaume-Uni et en Suisse, ou si le pays est inconnu ou si l'appel échoue.
+  - Le bandeau EN/FR/ES/PT (qui nomme Google Analytics et Google Ads) s'affiche dans l'EEE, au Royaume-Uni et en Suisse, ou si le pays est inconnu ou si l'appel échoue.
   - Le choix est gardé 6 mois dans `localStorage` `ajw_cookie_consent_v2`.
   - Accepter met les 4 signaux à `granted`.
   - Refuser, ou retirer son accord, met les 4 signaux à `denied`, supprime `_ga*`/`_gcl*` et recharge la page.
@@ -136,5 +138,5 @@ Le mieux reste de remplacer ces photos par vos propres photos de produits (même
   - `whatsapp_click` part toujours vers GA4 (`link_location` = `data-cta-location`, `page_language`, beacon). Sans accord, Consent Mode l'envoie sans cookie.
   - La conversion Ads `AW-18529460502/_PkpCOiWlq0dEJbCxINF` (50 GBP, beacon) part hors des régions concernées, ou après « Accepter ». Ce libellé ne sert que pour ce site.
 - GA4 : propriété 561247163 (compte « Sites Huile Argan FR » 413401960, flux 16224116734, support@acera.shop), ID de mesure `G-B0VQF4YB7S`, réglé dans `GA4_ID` (tools/build.py).
-- Pages de confidentialité (`noindex`, hors sitemap) : `/privacy/`, `/fr/confidentialite/`, `/es/privacidad/`. Leur texte est dans `tools/privacy_content.py`.
-- Sélecteur de langue : retiré de l'en-tête (demande de Jose), gardé en liens discrets EN / FR / ES dans le pied de page.
+- Pages de confidentialité (`noindex`, hors sitemap) : `/privacy/`, `/fr/confidentialite/`, `/es/privacidad/`, `/pt/privacidade/`. Leur texte est dans `tools/privacy_content.py`.
+- Sélecteur de langue : retiré de l'en-tête (demande de Jose), gardé en liens discrets EN / FR / ES / PT dans le pied de page.
