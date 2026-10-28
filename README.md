@@ -117,3 +117,13 @@ Toutes les photos viennent de **Pexels** (licence Pexels : usage commercial grat
 | `dattes-ajwa-premium-*.webp` | https://www.pexels.com/photo/6200512/ | Ali El Khatib | ⚠️ **Pas clairement de l'Ajwa** (ressemble à de la Medjool) — à remplacer par une photo réelle |
 
 Le mieux reste de remplacer ces photos par vos propres photos de produits (mêmes noms de fichiers, format WebP).
+
+## Suivi Google Ads + GA4 (Consent Mode v2, mode basique)
+
+- Bloc `<head>` : `tools/head-block.html` (inséré par `tools/build.py` dans les 3 pages d'accueil et les 3 pages de confidentialité). Il met les 4 signaux à `denied`, puis `url_passthrough` et `ads_data_redaction`. **Aucun gtag.js n'est chargé avant « Accepter »**, donc aucune requête Google et aucun ping sans cookie.
+- `js/analytics.js` : bandeau EN/FR/ES (nomme Google Analytics et Google Ads), choix stocké 6 mois dans `localStorage` `ajw_cookie_consent_v2`.
+  - Accepter : les 4 signaux passent à `granted`, puis un seul gtag.js (`id=AW-18529460502`) est injecté.
+  - Refuser : les 4 signaux restent à `denied` et les cookies `_ga*`/`_gcl*` sont supprimés. Si la personne retire son accord après avoir accepté, la page se recharge.
+  - Clic WhatsApp (`a[data-cta="whatsapp"]`), seulement après Accepter : `whatsapp_click` (GA4, `link_location` = `data-cta-location`), puis la conversion Ads `AW-18529460502/_PkpCOiWlq0dEJbCxINF` (50 GBP, beacon). Ce libellé ne sert que pour ce site.
+- GA4 : l'ID n'existe pas encore. Remplacer `<AJWA_GA4_ID>` par le vrai `G-…` dans `GA4_ID` (tools/build.py), puis relancer `python3 tools/build.py`. Tant que c'est le texte de remplacement, aucun événement GA4 n'est envoyé ; les conversions Ads fonctionnent déjà.
+- Pages de confidentialité (`noindex`, hors sitemap) : `/privacy/`, `/fr/confidentialite/`, `/es/privacidad/`. Leur texte est dans `tools/privacy_content.py`. Lien « Gérer les cookies » dans le pied de page.
