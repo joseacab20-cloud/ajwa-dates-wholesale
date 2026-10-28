@@ -6,7 +6,7 @@
    - Every WhatsApp click sends "whatsapp_click" to GA4 (once a real G- ID is set). The Google Ads conversion
      "WhatsApp clic - Ajwa dates" (£50 GBP, beacon) is sent outside those regions, and inside them only after "Accept".
    - "Decline" (or withdrawing): all 4 signals denied, _ga* / _gcl* cookies deleted, page reloaded.
-   Banner text in EN / FR / ES from <html lang>. Choice kept 6 months in localStorage "ajw_cookie_consent_v2". */
+   Banner text in EN / FR / ES / PT from <html lang>. Choice kept 6 months in localStorage "ajw_cookie_consent_v2". */
 (function () {
   'use strict';
 
@@ -32,6 +32,11 @@
       text: 'Usamos cookies de Google Analytics (medici\u00f3n de audiencia) y de Google Ads (medici\u00f3n del rendimiento de nuestros anuncios y publicidad personalizada), solo si usted lo acepta.',
       privacy: 'Pol\u00edtica de privacidad', url: '/es/privacidad/',
       decline: 'Rechazar', accept: 'Aceptar', aria: 'Consentimiento de cookies'
+    },
+    pt: {
+      text: 'Usamos cookies do Google Analytics (medi\u00e7\u00e3o de audi\u00eancia) e do Google Ads (medi\u00e7\u00e3o do desempenho dos nossos an\u00fancios e publicidade personalizada), apenas se aceitar.',
+      privacy: 'Pol\u00edtica de privacidade', url: '/pt/privacidade/',
+      decline: 'Recusar', accept: 'Aceitar', aria: 'Consentimento de cookies'
     }
   };
   var lang = (document.documentElement.getAttribute('lang') || 'en').slice(0, 2).toLowerCase();

@@ -1,5 +1,5 @@
 /* Ajwa Dates Wholesale — tiny UI helpers. No framework. Tracking + cookie banner live in js/analytics.js.
-   Each language is its own static page (/ = EN, /fr/, /es/); nothing is translated at runtime. */
+   Each language is its own static page (/ = EN, /fr/, /es/, /pt/); nothing is translated at runtime. */
 (function () {
   'use strict';
   var body = document.body;
