@@ -11,7 +11,7 @@ Site vitrine d'une seule page, en trois langues, chacune à sa propre adresse :
 > Le site est en ligne sur `ajwadateswholesale.vercel.app` (Vercel). L'ancienne adresse `/en/` redirige vers `/`.
 > S'il change, modifiez `SITE` dans `tools/build.py`, `robots.txt`, puis relancez la génération.
 
-Objectif : faire contacter le vendeur sur **WhatsApp** (`https://wa.me/212661111111`).
+Objectif : faire contacter le vendeur sur **WhatsApp** (`https://wa.me/212664738219`).
 
 - 100 % statique : HTML + CSS + un petit JavaScript (menu mobile). **Aucun framework, aucune installation.**
 - Chaque langue est une **vraie page HTML complète** : titre, description, Open Graph / Twitter, `canonical`,
@@ -94,7 +94,7 @@ pour savoir quel bouton a été cliqué.
 
 ## 5. À compléter / à vérifier avant publication
 
-- **Numéro WhatsApp** `+212 661 111 111` : à confirmer (il peut s'agir d'un numéro provisoire).
+- **Numéro WhatsApp** `+212 664 738 219` (confirmé par Jose, octobre 2026). Pour le changer : `WA_NUMBER` dans `tools/build.py` et le numéro affiché dans `tools/index.template.html`, puis `python3 tools/build.py`.
 - **Certifications** : aucune n'est citée (commentaire `TODO` dans le modèle). N'ajoutez que des certifications réelles et vérifiables.
 - **Avis clients** : remplacés par « ce que recherchent les acheteurs ». Ajoutez de vrais témoignages seulement s'ils existent (`TODO`).
 - Aucun prix, minimum de commande, volume, année ou nom d'entreprise n'a été inventé.

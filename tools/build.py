@@ -14,7 +14,7 @@ SITE = "https://ajwadateswholesale.vercel.app"   # production domain (no trailin
 LANGS = ["en", "fr", "es"]                        # first = default language, served at /
 PATHS = {"en": "/", "fr": "/fr/", "es": "/es/"}
 LASTMOD = "2026-10-28"
-WA_NUMBER = "212661111111"                        # WhatsApp number (digits only)
+WA_NUMBER = "212664738219"                        # WhatsApp number (digits only)
 FAQ_COUNT = 8
 
 # Indicative Ajwa calendar for Madinah (index 0 = January). Edit here if needed.
@@ -136,8 +136,17 @@ def lang_links(cur):
 
 TPL = (ROOT / "tools/index.template.html").read_text(encoding="utf-8")
 
+def fr_typo(text):
+    """French typography: no-break space before ? ! : ; and inside « », so the
+    punctuation never wraps alone onto a new line on small screens (text unchanged)."""
+    text = re.sub(r" ([?!:;»])", "\u00a0\\1", text)
+    return text.replace("« ", "«\u00a0")
+
 def render(lang):
     d = T[lang]
+    if lang == "fr":   # visible text only (meta tags, WhatsApp text and JSON-LD keep plain spaces)
+        d = {k: (fr_typo(v) if isinstance(v, str) and not k.startswith(("meta.", "wa.")) else v)
+             for k, v in d.items()}
     s = TPL
     s = s.replace("{{LD_ORG}}", json.dumps(org_ld(lang), ensure_ascii=False, indent=2))
     s = s.replace("{{LD_FAQ}}", json.dumps(faq_ld(lang), ensure_ascii=False, indent=2))
