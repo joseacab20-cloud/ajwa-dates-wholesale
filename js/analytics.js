@@ -1,8 +1,9 @@
 /* Ajwa Dates Wholesale — Google Ads + Google Analytics 4 (account 249-707-3399), Consent Mode v2, region-specific.
    - gtag.js loads for everyone (head block). Consent is denied by default in the EEA, the UK and Switzerland
      and granted elsewhere.
-   - /api/geo (Vercel geo header) tells us the visitor's country. The banner is shown only in those regions,
-     or when the country is unknown or the check fails (safe side).
+   - /api/geo (Vercel geo header, checked in the head block before any GA4/Ads config) tells us the visitor's
+     country. In those regions, or when the country is unknown or the check fails or times out, consent is set
+     to denied before the first hit and the banner is shown (safe side).
    - Every WhatsApp click sends "whatsapp_click" to GA4 (once a real G- ID is set). The Google Ads conversion
      "WhatsApp clic - Ajwa dates" (£50 GBP, beacon) is sent outside those regions, and inside them only after "Accept".
    - "Decline" (or withdrawing): all 4 signals denied, _ga* / _gcl* cookies deleted, page reloaded.
@@ -14,7 +15,6 @@
   var ADS_CONVERSION = { id: 'AW-18529460502', label: '_PkpCOiWlq0dEJbCxINF', value: 50, currency: 'GBP' };
   var KEY = 'ajw_cookie_consent_v2';
   var MAX_AGE = 15724800000; // 182 days
-  var GEO_URL = '/api/geo/'; // trailingSlash is on: avoids a 308 redirect
   var WA_SELECTOR = 'a[data-cta="whatsapp"]';
   var REGIONS = window.AJW_CONSENT_REGIONS || [];
   var TXT = {
@@ -116,25 +116,13 @@
     if (inRegion && !choice) showBanner(false);
   }
   // A stored choice means the visitor already saw the banner (consent region): no geo check needed.
+  // Otherwise the head block runs the /api/geo check (and sets consent to denied in the regions or if it fails).
   if (choice) {
     inRegion = true;
+  } else if (window.ajwOnGeo) {
+    window.ajwOnGeo(setRegion);
   } else {
-    var cached = null;
-    try { cached = sessionStorage.getItem('ajw_geo'); } catch (e) {}
-    if (cached !== null) {
-      setRegion(cached);
-    } else if (window.fetch && /^https?:$/.test(location.protocol)) {
-      fetch(GEO_URL, { credentials: 'omit' })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (d) {
-          var c = (d && d.country) || '';
-          try { sessionStorage.setItem('ajw_geo', c); } catch (e) {}
-          setRegion(c);
-        })
-        .catch(function () { setRegion(''); });
-    } else {
-      setRegion('');
-    }
+    setRegion('');
   }
 
   document.addEventListener('click', function (e) {

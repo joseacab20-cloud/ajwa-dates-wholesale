@@ -220,13 +220,13 @@ BODY = {
 <p>Esta página explica que dados são recolhidos quando visita o site Tâmaras Ajwa por Grosso ({SITE}/), porquê, durante quanto tempo são conservados e como exercer os seus direitos.</p>
 
 <h2>1. Quem é responsável pelos seus dados?</h2>
-<p>O responsável pelo tratamento é o editor do site Tâmaras Ajwa por Grosso. Para qualquer questão sobre os seus dados, contacte-nos no WhatsApp através do <a href="{WA}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="privacy">{PHONE}</a>.</p>
+<p>O responsável pelo tratamento é o editor do site Tâmaras Ajwa por Grosso. Para qualquer questão sobre os seus dados, fale conosco (ou contacte-nos) no WhatsApp pelo <a href="{WA}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="privacy">{PHONE}</a>.</p>
 
 <h2>2. Que dados são recolhidos?</h2>
 <p>Este site não tem formulários, contas de cliente nem pagamentos online. Os únicos dados recolhidos no site provêm da medição de audiência do <strong>Google Analytics&nbsp;4</strong> e da medição publicitária do <strong>Google Ads</strong>, usadas para medir as visitas e os contactos por WhatsApp. Aos visitantes do Espaço Económico Europeu, do Reino Unido e da Suíça é pedido primeiro o consentimento:</p>
 <ul>
   <li>as páginas que consulta, a data e a duração da visita e a página de onde veio (motor de pesquisa, rede social, link direto);</li>
-  <li>informações técnicas: tipo de dispositivo, sistema operativo, navegador, idioma, resolução do ecrã;</li>
+  <li>informações técnicas: tipo de dispositivo, sistema operativo, navegador, idioma, resolução da tela;</li>
   <li>uma localização aproximada (país, região, cidade), obtida a partir do seu endereço IP. Segundo a Google, o Google Analytics&nbsp;4 não regista nem guarda endereços IP;</li>
   <li>os cliques nos botões do WhatsApp (o local do botão na página e o endereço do link);</li>
   <li>um identificador aleatório guardado num cookie, que distingue visitas e visitantes sem saber quem é;</li>
@@ -263,13 +263,13 @@ BODY = {
   <li>Cookies do Google Analytics: 13&nbsp;meses no máximo.</li>
   <li>Cookies do Google Ads: 90&nbsp;dias.</li>
   <li>A sua escolha de consentimento (EEE, Reino Unido e Suíça): 6&nbsp;meses.</li>
-  <li>Mensagens que nos envia pelo WhatsApp: o tempo necessário para responder ao seu pedido e acompanhar a sua encomenda.</li>
+  <li>Mensagens que nos envia pelo WhatsApp: o tempo necessário para responder ao seu pedido e acompanhar o seu pedido.</li>
 </ul>
 
 <h2>6. Quem recebe estes dados?</h2>
 <ul>
   <li><strong>Google</strong> (Google Analytics), como prestador de serviços de medição de audiência, e <strong>Google</strong> (Google Ads), para medir o desempenho dos nossos anúncios e, quando permitido (no EEE, no Reino Unido e na Suíça, com o seu consentimento), para remarketing e publicidade personalizada. No caso do Google Ads, a Google usa também estes dados segundo as suas próprias regras: <a href="https://policies.google.com/technologies/partner-sites?hl=pt-PT" target="_blank" rel="noopener">como a Google usa os dados dos sites que utilizam os seus serviços</a>. Os dados podem ser transferidos para os Estados Unidos; a Google LLC está certificada ao abrigo do Quadro de Privacidade de Dados UE–EUA (Data Privacy Framework).</li>
-  <li><strong>Vercel</strong>, o alojamento do site, que trata os registos técnicos (incluindo endereços IP) necessários ao funcionamento e à segurança do site.</li>
+  <li><strong>Vercel</strong>, o alojamento do site, que trata os registros técnicos (incluindo endereços IP) necessários ao funcionamento e à segurança do site.</li>
   <li><strong>WhatsApp</strong>: ao clicar num botão do WhatsApp, sai do site; as mensagens que envia são tratadas pelo WhatsApp segundo a sua própria política de privacidade.</li>
 </ul>
 <p>Nunca vendemos os seus dados pessoais.</p>

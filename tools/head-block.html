@@ -34,7 +34,46 @@
     window.AJW_TAGS = { aw: 'AW-18529460502', ga4: '<AJWA_GA4_ID>' };
     window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
     gtag('js', new Date());
-    if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
-    gtag('config', window.AJW_TAGS.aw);
+    // The GA4 / Ads config (first hit, first cookie) waits for the /api/geo answer. In the EEA, the UK and
+    // Switzerland, or if the country is unknown, the check fails or times out (2 s), all 4 signals are set to
+    // denied first (whatever Google's own region detection says), until "Accept". Elsewhere: granted, as before.
+    (function () {
+      var started = false;
+      function startTags() {
+        if (started) return; started = true;
+        if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
+        gtag('config', window.AJW_TAGS.aw);
+      }
+      var cbs = [];
+      window.ajwOnGeo = function (cb) { if (window.AJW_GEO !== undefined) cb(window.AJW_GEO); else cbs.push(cb); };
+      function geoDone(country) {
+        if (window.AJW_GEO !== undefined) return;
+        country = /^[A-Z]{2}$/.test(country = String(country || '').toUpperCase()) ? country : '';
+        window.AJW_GEO = country;
+        if (!country || window.AJW_CONSENT_REGIONS.indexOf(country) !== -1) {
+          gtag('consent', 'update', {
+            'analytics_storage': 'denied', 'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied'
+          });
+        }
+        startTags();
+        while (cbs.length) cbs.shift()(country);
+      }
+      var stored = null;
+      try { stored = JSON.parse(localStorage.getItem('ajw_cookie_consent_v2')); } catch (e) {}
+      if (stored && (stored.v === 'granted' || stored.v === 'denied') && Date.now() - stored.t < 15724800000) { startTags(); return; }
+      var cached = null;
+      try { cached = sessionStorage.getItem('ajw_geo'); } catch (e) {}
+      if (cached !== null) { geoDone(cached); return; }
+      if (!window.fetch || !/^https?:$/.test(location.protocol)) { geoDone(''); return; }
+      setTimeout(function () { geoDone(''); }, 2000);
+      fetch('/api/geo/', { credentials: 'omit' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) {
+          var c = (d && d.country) || '';
+          if (window.AJW_GEO === undefined) { try { sessionStorage.setItem('ajw_geo', c); } catch (e) {} }
+          geoDone(c);
+        })
+        .catch(function () { geoDone(''); });
+    })();
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18529460502"></script>
