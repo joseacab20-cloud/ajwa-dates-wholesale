@@ -30,9 +30,9 @@ T = json.loads((ROOT / "tools/translations.json").read_text(encoding="utf-8"))
 import sys; sys.path.insert(0, str(ROOT / "tools"))
 import privacy_content as PV
 
-# Consent Mode v2 (BASIC mode) head block — Tracking Architect handoff block A
-# (/workspace/argangold/ajwa/builder-handoff.md). Same block on the 3 home pages and the 3 privacy pages.
-# gtag.js is NOT in the HTML: ajwLoadGoogleTag() injects one loader (id=AW-…) only after "Accept".
+# Consent Mode v2 head block (region-specific): denied by default in the EEA, UK and Switzerland, granted
+# elsewhere; one gtag.js (id=AW-…) loaded for everyone. Same block on the 3 home pages and the 3 privacy pages.
+# js/analytics.js asks /api/geo (api/geo.js, Vercel geo header) whether to show the banner.
 GA4_ID = "<AJWA_GA4_ID>"   # replace with the real G-XXXXXXXX of the ajwadateswholesale.vercel.app GA4 property
 ADS_ID = "AW-18529460502"
 HEAD_BLOCK = (ROOT / "tools/head-block.html").read_text(encoding="utf-8").rstrip("\n")
