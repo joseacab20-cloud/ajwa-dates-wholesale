@@ -135,6 +135,6 @@ Le mieux reste de remplacer ces photos par vos propres photos de produits (même
 - Clic WhatsApp (`a[data-cta="whatsapp"]`) :
   - `whatsapp_click` part toujours vers GA4 (`link_location` = `data-cta-location`, `page_language`, beacon). Sans accord, Consent Mode l'envoie sans cookie.
   - La conversion Ads `AW-18529460502/_PkpCOiWlq0dEJbCxINF` (50 GBP, beacon) part hors des régions concernées, ou après « Accepter ». Ce libellé ne sert que pour ce site.
-- GA4 : l'ID n'existe pas encore. Remplacer `<AJWA_GA4_ID>` par le vrai `G-…` dans `GA4_ID` (tools/build.py), puis relancer `python3 tools/build.py`.
+- GA4 : propriété 561247163 (compte « Sites Huile Argan FR » 413401960, flux 16224116734, support@acera.shop), ID de mesure `G-B0VQF4YB7S`, réglé dans `GA4_ID` (tools/build.py).
 - Pages de confidentialité (`noindex`, hors sitemap) : `/privacy/`, `/fr/confidentialite/`, `/es/privacidad/`. Leur texte est dans `tools/privacy_content.py`.
 - Sélecteur de langue : retiré de l'en-tête (demande de Jose), gardé en liens discrets EN / FR / ES dans le pied de page.
