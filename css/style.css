@@ -333,3 +333,45 @@ h1,h2,h3,p,li,dt,dd,summary,figcaption,.btn{overflow-wrap:break-word}
 @media (max-height:500px) and (orientation:landscape){
   .hero__media{max-width:300px}
 }
+
+/* ==========================================================================
+   Cookie banner (js/analytics.js), footer legal links, privacy pages
+   ========================================================================== */
+.legal-links{margin-top:.6rem!important;display:flex;flex-wrap:wrap;align-items:center;gap:0 .5rem}
+.legal-links a,.link-btn{color:#e6d6ba;display:inline-flex;align-items:center;min-height:44px}
+.legal-links a:hover,.link-btn:hover{color:var(--gold-2)}
+.link-btn{background:none;border:0;padding:0;font:inherit;text-decoration:underline;cursor:pointer}
+.legal .link-btn{color:var(--gold-deep);min-height:0;display:inline}
+.legal{padding:3rem 0 4rem}
+.legal h1{font-size:clamp(2rem,6vw,3rem)}
+.legal h2{font-size:clamp(1.35rem,3.6vw,1.7rem);margin-top:2rem}
+.legal__updated{color:var(--muted);font-size:.92rem}
+.legal ul{padding-left:1.2rem}
+.legal li{margin:.35rem 0}
+.legal ul li{list-style:disc}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:1rem 0}
+.legal table{border-collapse:collapse;width:100%;min-width:520px;font-size:.92rem}
+.legal th,.legal td{border:1px solid var(--sand-2);padding:.55rem .7rem;text-align:left;vertical-align:top}
+.legal th{background:var(--sand)}
+.legal code{font-size:.88em;background:var(--sand);padding:.05em .3em;border-radius:4px;overflow-wrap:anywhere}
+.legal__back{margin-top:2.5rem}
+.footer--legal{padding-top:1rem}
+.footer--legal .footer__bottom{margin-top:0;border-top:0}
+.page-legal .header__actions{margin-left:auto}
+
+/* Cookie banner — append to css/style.css. Both buttons have equal prominence (same size, same weight). */
+.cookie-banner{position:fixed;left:16px;right:16px;bottom:16px;z-index:1000;max-width:760px;margin:0 auto;
+  background:var(--paper);color:var(--text);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow);padding:16px 18px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;font:15px/1.5 var(--sans)}
+.cookie-banner[hidden]{display:none}
+.cookie-banner p{margin:0;flex:1 1 320px}
+.cookie-banner a{color:var(--gold-deep);text-decoration:underline}
+.cookie-actions{display:flex;gap:10px;flex:0 0 auto}
+.btn-cookie{min-width:112px;padding:10px 16px;border-radius:var(--r);font:600 15px/1 var(--sans);cursor:pointer;
+  border:1px solid var(--ink);background:var(--paper);color:var(--ink)}
+.btn-cookie-accept{background:var(--ink);color:var(--paper)}
+.btn-cookie:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+@media (max-width:560px){.cookie-actions{width:100%}.btn-cookie{flex:1}}
+/* Site additions: iPhone safe area + 44px tap targets */
+.cookie-banner{left:calc(16px + env(safe-area-inset-left,0px));right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.btn-cookie{min-height:44px}
