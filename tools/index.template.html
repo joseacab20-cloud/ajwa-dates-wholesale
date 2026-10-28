@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="{{LANG}}">
+<head>
+  <!-- ============================================================
+       GOOGLE TAG MANAGER (HEAD) — emplacement réservé, vide.
+       Collez ici le 1er extrait GTM (<script>…GTM-XXXXXXX…</script>).
+       Aucun outil de suivi n'est installé pour l'instant.
+       ============================================================ -->
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{meta.title}}</title>
+  <meta name="description" content="{{meta.description}}">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#1b110b">
+  <!-- Domain is set in tools/build.py (SITE). FR = /, EN = /en/, ES = /es/ -->
+  <link rel="canonical" href="{{CANONICAL}}">
+{{HREFLANG}}
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{site.name}}">
+  <meta property="og:url" content="{{CANONICAL}}">
+  <meta property="og:title" content="{{meta.ogTitle}}">
+  <meta property="og:description" content="{{meta.ogDescription}}">
+  <meta property="og:locale" content="{{meta.ogLocale}}">
+{{OG_ALT}}
+  <meta property="og:image" content="{{SITE}}/images/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{img.og.alt}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{meta.ogTitle}}">
+  <meta name="twitter:description" content="{{meta.ogDescription}}">
+  <meta name="twitter:image" content="{{SITE}}/images/og-image.jpg">
+  <meta name="twitter:image:alt" content="{{img.og.alt}}">
+
+  <link rel="icon" href="{{P}}favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{{P}}images/apple-touch-icon.png">
+  <link rel="preload" as="image" href="{{P}}images/dattes-ajwa-en-gros-800.webp" imagesrcset="{{P}}images/dattes-ajwa-en-gros-480.webp 480w, {{P}}images/dattes-ajwa-en-gros-800.webp 800w" imagesizes="(min-width: 960px) 40vw, 88vw" fetchpriority="high">
+  <link rel="stylesheet" href="{{P}}css/style.css">
+
+  <script type="application/ld+json">
+{{LD_ORG}}
+  </script>
+  <script type="application/ld+json">
+{{LD_FAQ}}
+  </script>
+</head>
+<body>
+  <!-- ============================================================
+       GOOGLE TAG MANAGER (BODY / noscript) — emplacement réservé, vide.
+       Collez ici le 2e extrait GTM (<noscript><iframe …></iframe></noscript>).
+       Chaque lien WhatsApp porte data-cta="whatsapp" + data-cta-location="…"
+       (déclencheur GTM : clic sur a[data-cta="whatsapp"]).
+       ============================================================ -->
+
+  {{ICON_SPRITE}}
+  <a class="skip" href="#main">{{a11y.skip}}</a>
+
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a class="brand" href="#top" aria-label="{{a11y.home}}">
+        <img src="{{P}}favicon.svg" alt="" width="36" height="36">
+        <span class="brand__txt">{{site.nameA}} <em>{{site.nameB}}</em></span>
+      </a>
+      <nav class="nav" id="nav" aria-label="{{a11y.nav}}">
+        <a href="#about-ajwa">{{nav.about}}</a>
+        <a href="#harvest">{{nav.harvest}}</a>
+        <a href="#products">{{nav.products}}</a>
+        <a href="#why">{{nav.why}}</a>
+        <a href="#certifications">{{nav.certs}}</a>
+        <a href="#faq">{{nav.faq}}</a>
+      </nav>
+      <div class="header__actions">
+        <nav class="lang" aria-label="{{a11y.lang}}">
+{{LANG_LINKS}}
+        </nav>
+        <a class="btn btn--wa btn--sm header__wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="header">{{ICON_WA}}<span>{{nav.cta}}</span></a>
+        <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="{{a11y.menu}}"><span></span><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero__grid">
+        <div class="hero__text">
+          <p class="eyebrow eyebrow--light">{{hero.eyebrow}}</p>
+          <h1 id="hero-title">{{hero.title}}</h1>
+          <p class="hero__lead">{{hero.lead}}</p>
+          <ul class="hero__points">
+            <li>{{hero.point1}}</li>
+            <li>{{hero.point2}}</li>
+            <li>{{hero.point3}}</li>
+          </ul>
+          <div class="cta-row">
+            <a class="btn btn--wa btn--lg" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="hero">{{ICON_WA}}<span>{{cta.contact}}</span></a>
+            <a class="btn btn--ghost-light btn--lg" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="hero-quote"><span>{{cta.quote}}</span></a>
+          </div>
+          <p class="hero__note">{{hero.note}}</p>
+        </div>
+        <div class="hero__media">
+          <figure class="arch">
+            <picture>
+              <img src="{{P}}images/dattes-ajwa-en-gros-800.webp" srcset="{{P}}images/dattes-ajwa-en-gros-480.webp 480w, {{P}}images/dattes-ajwa-en-gros-800.webp 800w" sizes="(min-width: 960px) 40vw, 88vw" width="800" height="968" alt="{{img.hero.alt}}" fetchpriority="high">
+            </picture>
+          </figure>
+          <p class="hero__badge"><strong>{{hero.badgeA}}</strong><span>{{hero.badgeB}}</span></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRUST BAR -->
+    <section class="trust" aria-label="{{a11y.trust}}">
+      <ul class="container trust__list">
+        <li>{{ICON_PIN}}<div><strong>{{trust.t1}}</strong><span>{{trust.d1}}</span></div></li>
+        <li>{{ICON_BOX}}<div><strong>{{trust.t2}}</strong><span>{{trust.d2}}</span></div></li>
+        <li>{{ICON_SNOW}}<div><strong>{{trust.t3}}</strong><span>{{trust.d3}}</span></div></li>
+        <li>{{ICON_SHIP}}<div><strong>{{trust.t4}}</strong><span>{{trust.d4}}</span></div></li>
+      </ul>
+    </section>
+
+    <!-- ABOUT AJWA & ORIGIN -->
+    <section class="section about" id="about-ajwa" aria-labelledby="about-title">
+      <div class="container about__grid">
+        <figure class="about__media">
+          <img src="{{P}}images/palmiers-madinah-800.webp" srcset="{{P}}images/palmiers-madinah-480.webp 480w, {{P}}images/palmiers-madinah-800.webp 800w" sizes="(min-width: 960px) 38vw, 92vw" width="800" height="1000" alt="{{img.origin.alt}}" loading="lazy" decoding="async">
+          <figcaption>{{about.figcap}}</figcaption>
+        </figure>
+        <div class="about__text">
+          <p class="eyebrow">{{about.eyebrow}}</p>
+          <h2 id="about-title">{{about.title}}</h2>
+          <p class="lead">{{about.p1}}</p>
+          <p>{{about.p2}}</p>
+          <div class="pillars">
+            <div class="pillar"><span class="pillar__n">01</span><h3>{{about.h1}}</h3><p>{{about.t1}}</p></div>
+            <div class="pillar"><span class="pillar__n">02</span><h3>{{about.h2}}</h3><p>{{about.t2}}</p></div>
+            <div class="pillar"><span class="pillar__n">03</span><h3>{{about.h3}}</h3><p>{{about.t3}}</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HARVEST SEASON -->
+    <section class="section harvest" id="harvest" aria-labelledby="harvest-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow eyebrow--light">{{harvest.eyebrow}}</p>
+          <h2 id="harvest-title">{{harvest.title}}</h2>
+          <p class="section__lead">{{harvest.lead}}</p>
+        </div>
+
+        <figure class="hchart" aria-labelledby="hchart-cap">
+          <figcaption id="hchart-cap" class="hchart__cap">
+            <h3>{{harvest.chartTitle}}</h3>
+            <span>{{harvest.chartSub}}</span>
+          </figcaption>
+          <ol class="hchart__months">
+{{HARVEST_MONTHS}}
+          </ol>
+          <p class="hchart__avail"><span class="dot dot--avail" aria-hidden="true"></span>{{harvest.availRow}}</p>
+          <ul class="hchart__legend" aria-label="{{harvest.legendLabel}}">
+            <li><span class="sw sw--early" aria-hidden="true"></span>{{harvest.lg.early}}</li>
+            <li><span class="sw sw--peak" aria-hidden="true"></span>{{harvest.lg.peak}}</li>
+            <li><span class="sw sw--main" aria-hidden="true"></span>{{harvest.lg.main}}</li>
+            <li><span class="sw sw--new" aria-hidden="true"></span>{{harvest.lg.new}}</li>
+            <li><span class="sw sw--stock" aria-hidden="true"></span>{{harvest.lg.stock}}</li>
+          </ul>
+          <p class="hchart__note">{{harvest.chartNote}}</p>
+        </figure>
+
+        <div class="harvest__cards">
+          <article class="hcard"><h3>{{harvest.c1h}}</h3><p>{{harvest.c1t}}</p></article>
+          <article class="hcard"><h3>{{harvest.c2h}}</h3><p>{{harvest.c2t}}</p></article>
+          <article class="hcard"><h3>{{harvest.c3h}}</h3><p>{{harvest.c3t}}</p></article>
+        </div>
+
+        <div class="harvest__band">
+          <img src="{{P}}images/recolte-dattes-ajwa-1200.webp" srcset="{{P}}images/recolte-dattes-ajwa-640.webp 640w, {{P}}images/recolte-dattes-ajwa-1200.webp 1200w" sizes="(min-width: 960px) 50vw, 92vw" width="1200" height="800" alt="{{img.harvest.alt}}" loading="lazy" decoding="async">
+          <div>
+            <h3>{{harvest.planH}}</h3>
+            <p>{{harvest.planT}}</p>
+            <a class="btn btn--wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="harvest">{{ICON_WA}}<span>{{cta.availability}}</span></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS & PACKAGING -->
+    <section class="section products" id="products" aria-labelledby="products-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow">{{products.eyebrow}}</p>
+          <h2 id="products-title">{{products.title}}</h2>
+          <p class="section__lead">{{products.lead}}</p>
+        </div>
+        <div class="products__grid">
+          <article class="pcard pcard--feature">
+            <img src="{{P}}images/dattes-ajwa-premium-800.webp" srcset="{{P}}images/dattes-ajwa-premium-480.webp 480w, {{P}}images/dattes-ajwa-premium-800.webp 800w" sizes="(min-width: 960px) 30vw, 92vw" width="800" height="610" alt="{{img.product.alt}}" loading="lazy" decoding="async">
+            <div class="pcard__body">
+              <span class="tag">{{products.p1.tag}}</span>
+              <h3>{{products.p1.h}}</h3>
+              <p>{{products.p1.t}}</p>
+              <a class="link-wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-bulk">{{ICON_WA}}<span>{{cta.order}}</span></a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="pcard__icon">{{ICON_VAC}}</div>
+            <div class="pcard__body">
+              <span class="tag">{{products.p2.tag}}</span>
+              <h3>{{products.p2.h}}</h3>
+              <p>{{products.p2.t}}</p>
+              <a class="link-wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-vacuum">{{ICON_WA}}<span>{{cta.quote}}</span></a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="pcard__icon">{{ICON_BAG}}</div>
+            <div class="pcard__body">
+              <span class="tag">{{products.p3.tag}}</span>
+              <h3>{{products.p3.h}}</h3>
+              <p>{{products.p3.t}}</p>
+              <a class="link-wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-retail">{{ICON_WA}}<span>{{cta.quote}}</span></a>
+            </div>
+          </article>
+          <article class="pcard">
+            <div class="pcard__icon">{{ICON_LABEL}}</div>
+            <div class="pcard__body">
+              <span class="tag">{{products.p4.tag}}</span>
+              <h3>{{products.p4.h}}</h3>
+              <p>{{products.p4.t}}</p>
+              <a class="link-wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-private-label">{{ICON_WA}}<span>{{cta.contact}}</span></a>
+            </div>
+          </article>
+        </div>
+        <p class="products__note">{{products.note}}</p>
+      </div>
+    </section>
+
+    <!-- WHY CHOOSE US -->
+    <section class="section why" id="why" aria-labelledby="why-title">
+      <div class="container why__grid">
+        <div class="why__intro">
+          <p class="eyebrow">{{why.eyebrow}}</p>
+          <h2 id="why-title">{{why.title}}</h2>
+          <p>{{why.lead}}</p>
+          <a class="btn btn--wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="why">{{ICON_WA}}<span>{{cta.order}}</span></a>
+        </div>
+        <ol class="why__list">
+          <li><h3>{{why.w1h}}</h3><p>{{why.w1t}}</p></li>
+          <li><h3>{{why.w2h}}</h3><p>{{why.w2t}}</p></li>
+          <li><h3>{{why.w3h}}</h3><p>{{why.w3t}}</p></li>
+          <li><h3>{{why.w4h}}</h3><p>{{why.w4t}}</p></li>
+          <li><h3>{{why.w5h}}</h3><p>{{why.w5t}}</p></li>
+          <li><h3>{{why.w6h}}</h3><p>{{why.w6t}}</p></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- QUALITY & CERTIFICATIONS -->
+    <section class="section quality" id="certifications" aria-labelledby="certs-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow">{{certs.eyebrow}}</p>
+          <h2 id="certs-title">{{certs.title}}</h2>
+          <p class="section__lead">{{certs.lead}}</p>
+        </div>
+        <ul class="quality__grid">
+          <li><h3>{{certs.c1h}}</h3><p>{{certs.c1t}}</p></li>
+          <li><h3>{{certs.c2h}}</h3><p>{{certs.c2t}}</p></li>
+          <li><h3>{{certs.c3h}}</h3><p>{{certs.c3t}}</p></li>
+          <li><h3>{{certs.c4h}}</h3><p>{{certs.c4t}}</p></li>
+        </ul>
+        <!-- TODO (certifications) : n'ajoutez ici QUE des certifications réellement détenues,
+             avec leur nom exact et, si possible, le numéro / l'organisme. Exemple de bloc :
+        <ul class="certs-list">
+          <li><strong>Nom de la certification</strong> — organisme, n° de certificat</li>
+        </ul>
+        -->
+        <div class="docs">
+          <p>{{certs.docs}}</p>
+          <a class="btn btn--outline" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="quality">{{ICON_WA}}<span>{{cta.docs}}</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHAT WHOLESALE BUYERS LOOK FOR (no invented testimonials) -->
+    <section class="section buyers" id="buyers" aria-labelledby="buyers-title">
+      <div class="container">
+        <div class="section__head">
+          <p class="eyebrow eyebrow--light">{{buyers.eyebrow}}</p>
+          <h2 id="buyers-title">{{buyers.title}}</h2>
+          <p class="section__lead">{{buyers.lead}}</p>
+        </div>
+        <div class="buyers__grid">
+          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>{{buyers.b1h}}</h3><p>{{buyers.b1t}}</p></article>
+          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>{{buyers.b2h}}</h3><p>{{buyers.b2t}}</p></article>
+          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>{{buyers.b3h}}</h3><p>{{buyers.b3t}}</p></article>
+        </div>
+        <!-- TODO (témoignages) : remplacer / compléter UNIQUEMENT par de vrais avis clients, avec leur accord.
+        <figure class="testimonial">
+          <blockquote><p>« Texte exact de l'avis client »</p></blockquote>
+          <figcaption><strong>Prénom N.</strong> — fonction, type d'entreprise</figcaption>
+        </figure>
+        -->
+      </div>
+    </section>
+
+    <!-- MARKETS -->
+    <section class="section markets" id="markets" aria-labelledby="markets-title">
+      <div class="container markets__grid">
+        <div>
+          <p class="eyebrow">{{markets.eyebrow}}</p>
+          <h2 id="markets-title">{{markets.title}}</h2>
+          <p>{{markets.lead}}</p>
+        </div>
+        <div>
+          <ul class="chips">
+            <li>{{markets.m1}}</li>
+            <li>{{markets.m2}}</li>
+            <li>{{markets.m3}}</li>
+            <li>{{markets.m4}}</li>
+            <li>{{markets.m5}}</li>
+          </ul>
+          <p class="markets__export">{{markets.export}}</p>
+          <a class="btn btn--wa" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="markets">{{ICON_WA}}<span>{{cta.quote}}</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section faq" id="faq" aria-labelledby="faq-title">
+      <div class="container container--narrow">
+        <div class="section__head">
+          <p class="eyebrow">{{faq.eyebrow}}</p>
+          <h2 id="faq-title">{{faq.title}}</h2>
+        </div>
+        <div class="faq__list">
+{{FAQ_ITEMS}}
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final" id="contact" aria-labelledby="final-title">
+      <div class="container final__inner">
+        <h2 id="final-title">{{final.title}}</h2>
+        <p>{{final.text}}</p>
+        <div class="cta-row cta-row--center">
+          <a class="btn btn--wa btn--lg" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final">{{ICON_WA}}<span>{{cta.contact}}</span></a>
+          <a class="btn btn--ghost-light btn--lg" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final-order"><span>{{cta.order}}</span></a>
+        </div>
+        <p class="final__phone">WhatsApp : <a href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final-number">+212 661 111 111</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__grid">
+      <div>
+        <p class="brand brand--footer"><img src="{{P}}favicon.svg" alt="" width="32" height="32" loading="lazy"><span class="brand__txt">{{site.nameA}} <em>{{site.nameB}}</em></span></p>
+        <p class="footer__tag">{{footer.tagline}}</p>
+      </div>
+      <nav aria-label="{{footer.linksTitle}}">
+        <p class="footer__h">{{footer.linksTitle}}</p>
+        <ul class="footer__links">
+          <li><a href="#about-ajwa">{{footer.about}}</a></li>
+          <li><a href="#harvest">{{footer.harvest}}</a></li>
+          <li><a href="#certifications">{{footer.certs}}</a></li>
+          <li><a href="#markets">{{footer.markets}}</a></li>
+        </ul>
+      </nav>
+      <div>
+        <p class="footer__h">{{footer.contactTitle}}</p>
+        <a class="btn btn--wa btn--sm" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="footer">{{ICON_WA}}<span>{{cta.contact}}</span></a>
+        <nav class="lang lang--footer" aria-label="{{a11y.lang}}">
+{{LANG_LINKS}}
+        </nav>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <p>© <span id="year">2026</span> {{site.name}} — {{footer.rights}}</p>
+    </div>
+  </footer>
+
+  <a class="wa-float" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="floating" aria-label="{{a11y.waFloat}}">{{ICON_WA_LG}}</a>
+
+  <script src="{{P}}js/main.js" defer></script>
+</body>
+</html>
