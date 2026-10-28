@@ -1,43 +1,40 @@
-  <!-- Google Ads (AW-18529460502) + Google Analytics 4 (<AJWA_GA4_ID>) via ONE gtag.js, Consent Mode v2 in BASIC mode:
-       gtag.js is NOT loaded before "Accept" -> no cookies and no cookieless pings before consent.
-       Choice stored in localStorage "ajw_cookie_consent_v2" (6 months). Same block on /, /fr/, /es/ and the 3 privacy pages. -->
+  <!-- Google Ads (AW-18529460502) + Google Analytics 4 (<AJWA_GA4_ID>), one gtag.js loaded for everyone.
+       Consent Mode v2, region-specific: denied by default in the EEA, the UK and Switzerland (banner shown there
+       by js/analytics.js after a /api/geo check), granted elsewhere. Choice kept in localStorage "ajw_cookie_consent_v2". -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    window.AJW_CONSENT_REGIONS = ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'];
     gtag('consent', 'default', {
       'analytics_storage': 'denied',
       'ad_storage': 'denied',
       'ad_user_data': 'denied',
       'ad_personalization': 'denied',
+      'region': window.AJW_CONSENT_REGIONS,
       'wait_for_update': 500
     });
-    gtag('set', 'url_passthrough', true);
+    gtag('consent', 'default', {
+      'analytics_storage': 'granted',
+      'ad_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted'
+    });
     gtag('set', 'ads_data_redaction', true);
-    window.AJW_TAGS = { aw: 'AW-18529460502', ga4: '<AJWA_GA4_ID>' };
-    window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
-    // Loads the single gtag.js loader, only once and only after consent.
-    window.ajwLoadGoogleTag = function () {
-      if (window.__ajwTagLoaded) return;
-      window.__ajwTagLoaded = true;
-      gtag('consent', 'update', {
-        'analytics_storage': 'granted',
-        'ad_storage': 'granted',
-        'ad_user_data': 'granted',
-        'ad_personalization': 'granted'
-      });
-      var s = document.createElement('script');
-      s.async = true;
-      s.id = 'gtag-loader';
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.AJW_TAGS.aw;
-      document.head.appendChild(s);
-      gtag('js', new Date());
-      if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
-      gtag('config', window.AJW_TAGS.aw);
-    };
+    gtag('set', 'url_passthrough', true);
     (function () {
       try {
         var c = JSON.parse(localStorage.getItem('ajw_cookie_consent_v2'));
-        if (c && c.v === 'granted' && Date.now() - c.t < 15724800000) window.ajwLoadGoogleTag();
+        if (c && (c.v === 'granted' || c.v === 'denied') && Date.now() - c.t < 15724800000) {
+          gtag('consent', 'update', {
+            'analytics_storage': c.v, 'ad_storage': c.v, 'ad_user_data': c.v, 'ad_personalization': c.v
+          });
+        }
       } catch (e) {}
     })();
+    window.AJW_TAGS = { aw: 'AW-18529460502', ga4: '<AJWA_GA4_ID>' };
+    window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
+    gtag('js', new Date());
+    if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
+    gtag('config', window.AJW_TAGS.aw);
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18529460502"></script>

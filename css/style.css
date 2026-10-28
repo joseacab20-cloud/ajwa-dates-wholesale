@@ -375,3 +375,11 @@ h1,h2,h3,p,li,dt,dd,summary,figcaption,.btn{overflow-wrap:break-word}
 /* Site additions: iPhone safe area + 44px tap targets */
 .cookie-banner{left:calc(16px + env(safe-area-inset-left,0px));right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 .btn-cookie{min-height:44px}
+/* Language links: header switcher removed (Jose, 28 Oct 2026); discreet EN / FR / ES text links in the footer only */
+.lang.lang--footer{display:flex;align-items:center;gap:0;margin-top:1rem;border:0;border-radius:0;overflow:visible;font-size:.85rem}
+.lang.lang--footer a{min-width:44px;min-height:44px;padding:0 .4rem;background:none;color:#cdbb9c;font-weight:600;letter-spacing:.06em;font-size:.85rem}
+.lang.lang--footer a:first-child{margin-left:-.4rem}
+.lang.lang--footer a+a{border-left:0;position:relative}
+.lang.lang--footer a+a::before{content:"/";position:absolute;left:-.2rem;color:rgba(224,173,79,.45);font-weight:400}
+.lang.lang--footer a[aria-current="page"]{background:none;color:var(--gold-2);text-decoration:underline;text-underline-offset:4px}
+.lang.lang--footer a:hover:not([aria-current]){background:none;color:#fff6e6;text-decoration:underline}

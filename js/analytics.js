@@ -1,26 +1,22 @@
-/* Ajwa Dates Wholesale — Google Ads + Google Analytics 4 (account 249-707-3399), Consent Mode v2, BASIC mode.
-   - Before "Accept": gtag.js is not loaded, nothing is sent to Google (no cookies, no cookieless pings).
-   - "Accept": loads the single gtag.js (see head block), grants all 4 signals, then each WhatsApp click sends
-     "whatsapp_click" to GA4 (once a real G- ID replaces <AJWA_GA4_ID>) and the Google Ads conversion
-     "WhatsApp clic - Ajwa dates" (£50 GBP, beacon).
-   - "Decline": nothing loads; _ga* / _gcl* cookies are deleted. Withdrawing after "Accept" deletes them and
-     reloads the page, so no Google tag stays active.
+/* Ajwa Dates Wholesale — Google Ads + Google Analytics 4 (account 249-707-3399), Consent Mode v2, region-specific.
+   - gtag.js loads for everyone (head block). Consent is denied by default in the EEA, the UK and Switzerland
+     and granted elsewhere.
+   - /api/geo (Vercel geo header) tells us the visitor's country. The banner is shown only in those regions,
+     or when the country is unknown or the check fails (safe side).
+   - Every WhatsApp click sends "whatsapp_click" to GA4 (once a real G- ID is set). The Google Ads conversion
+     "WhatsApp clic - Ajwa dates" (£50 GBP, beacon) is sent outside those regions, and inside them only after "Accept".
+   - "Decline" (or withdrawing): all 4 signals denied, _ga* / _gcl* cookies deleted, page reloaded.
    Banner text in EN / FR / ES from <html lang>. Choice kept 6 months in localStorage "ajw_cookie_consent_v2". */
 (function () {
   'use strict';
 
   /* Google Ads conversion "WhatsApp clic - Ajwa dates" (ID 7879363432). This label belongs to THIS site only. */
-  var ADS_CONVERSION = {
-    id: 'AW-18529460502',
-    label: '_PkpCOiWlq0dEJbCxINF',
-    value: 50,
-    currency: 'GBP'
-  };
-  function adsEnabled() { return !!(ADS_CONVERSION.id && ADS_CONVERSION.label); }
-
+  var ADS_CONVERSION = { id: 'AW-18529460502', label: '_PkpCOiWlq0dEJbCxINF', value: 50, currency: 'GBP' };
   var KEY = 'ajw_cookie_consent_v2';
   var MAX_AGE = 15724800000; // 182 days
-  var WA_SELECTOR = 'a[data-cta="whatsapp"], a[href*="wa.me/"], a[href*="api.whatsapp.com/"]';
+  var GEO_URL = '/api/geo/'; // trailingSlash is on: avoids a 308 redirect
+  var WA_SELECTOR = 'a[data-cta="whatsapp"]';
+  var REGIONS = window.AJW_CONSENT_REGIONS || [];
   var TXT = {
     en: {
       text: 'We use Google Analytics cookies (audience measurement) and Google Ads cookies (measuring our ads\' performance and personalised advertising), only if you agree.',
@@ -54,6 +50,9 @@
   function saveChoice(v) {
     try { localStorage.setItem(KEY, JSON.stringify({ v: v, t: Date.now() })); } catch (e) {}
   }
+  function updateConsent(v) {
+    gtag('consent', 'update', { 'analytics_storage': v, 'ad_storage': v, 'ad_user_data': v, 'ad_personalization': v });
+  }
   // Deletes Google Analytics (_ga, _ga_XXXX) and Google Ads (_gcl_au, _gcl_aw...) cookies.
   function clearGoogleCookies() {
     var parts = location.hostname.split('.');
@@ -69,6 +68,8 @@
 
   var choice = readChoice();
   if (choice === 'denied') clearGoogleCookies();
+  // Consent region: true (EEA/UK/CH, unknown or check failed), false (elsewhere), null (check still running).
+  var inRegion = null;
 
   var banner = null;
   function hideBanner() { if (banner) banner.hidden = true; }
@@ -88,24 +89,14 @@
         var b = e.target.closest('[data-consent]');
         if (!b) return;
         var v = b.getAttribute('data-consent');
-        var wasLoaded = !!window.__ajwTagLoaded;
         choice = v;
         saveChoice(v);
+        updateConsent(v);
         hideBanner();
-        if (v === 'granted') {
-          if (window.ajwLoadGoogleTag) window.ajwLoadGoogleTag();
-        } else {
-          // "Decline" also updates all 4 signals (only queued in dataLayer: no Google tag is loaded).
-          gtag('consent', 'update', {
-            'analytics_storage': 'denied', 'ad_storage': 'denied',
-            'ad_user_data': 'denied', 'ad_personalization': 'denied'
-          });
+        if (v === 'denied') {
+          if (window.AJW_TAGS && window.ajwGa4Ready && window.ajwGa4Ready()) window['ga-disable-' + window.AJW_TAGS.ga4] = true;
           clearGoogleCookies();
-          if (wasLoaded) {
-            // Withdrawal after "Accept": stop the already-loaded tag, then reload without it.
-            if (window.AJW_TAGS && window.ajwGa4Ready && window.ajwGa4Ready()) window['ga-disable-' + window.AJW_TAGS.ga4] = true;
-            location.reload();
-          }
+          location.reload();
         }
       });
       document.body.appendChild(banner);
@@ -114,27 +105,41 @@
     if (focus) banner.querySelector('button').focus();
   }
 
-  if (!choice) showBanner(false);
-
-  // Keeps the Google ad click ID (gclid/gbraid/wbraid) when the visitor switches language before accepting.
-  var adParams = location.search.match(/[?&](gclid|gbraid|wbraid)=[^&#]+/g);
-  if (adParams) {
-    var qs = '?' + adParams.map(function (p) { return p.slice(1); }).join('&');
-    document.querySelectorAll('.lang a[href]').forEach(function (a) {
-      var h = a.getAttribute('href');
-      if (h && h.indexOf('?') === -1 && h.charAt(0) !== '#') a.setAttribute('href', h.replace(/(#.*)?$/, qs + '$1'));
-    });
+  function setRegion(country) {
+    country = (country || '').toUpperCase();
+    inRegion = !/^[A-Z]{2}$/.test(country) || REGIONS.indexOf(country) !== -1;
+    if (inRegion && !choice) showBanner(false);
+  }
+  // A stored choice means the visitor already saw the banner (consent region): no geo check needed.
+  if (choice) {
+    inRegion = true;
+  } else {
+    var cached = null;
+    try { cached = sessionStorage.getItem('ajw_geo'); } catch (e) {}
+    if (cached !== null) {
+      setRegion(cached);
+    } else if (window.fetch && /^https?:$/.test(location.protocol)) {
+      fetch(GEO_URL, { credentials: 'omit' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) {
+          var c = (d && d.country) || '';
+          try { sessionStorage.setItem('ajw_geo', c); } catch (e) {}
+          setRegion(c);
+        })
+        .catch(function () { setRegion(''); });
+    } else {
+      setRegion('');
+    }
   }
 
   document.addEventListener('click', function (e) {
     if (!e.target.closest) return;
-    // "Manage cookies" reopens the banner
+    // "Cookie settings" reopens the banner
     if (e.target.closest('[data-consent-open]')) { e.preventDefault(); showBanner(true); return; }
     var link = e.target.closest(WA_SELECTOR);
     if (!link) return;
-    // Nothing at all is sent (or queued) without consent.
-    if (choice !== 'granted' || !window.__ajwTagLoaded) return;
     var section = link.closest('section[id], header[id], footer[id], main[id]');
+    // GA4: always sent; in consent regions Consent Mode keeps it cookieless until "Accept".
     if (window.ajwGa4Ready && window.ajwGa4Ready()) {
       gtag('event', 'whatsapp_click', {
         link_location: link.getAttribute('data-cta-location') || (section && section.id) || 'unknown',
@@ -144,8 +149,9 @@
         send_to: window.AJW_TAGS.ga4
       });
     }
-    // Google Ads conversion. No preventDefault, no callback, no redirect: the link opens in a new tab as before.
-    if (adsEnabled()) {
+    // Google Ads conversion: outside consent regions, or after "Accept". Unknown region = no conversion yet.
+    // No preventDefault, no callback, no redirect: the link opens in a new tab as before.
+    if (choice === 'granted' || inRegion === false) {
       gtag('event', 'conversion', {
         'send_to': ADS_CONVERSION.id + '/' + ADS_CONVERSION.label,
         'value': ADS_CONVERSION.value,
