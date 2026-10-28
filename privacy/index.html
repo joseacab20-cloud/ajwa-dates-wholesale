@@ -2,52 +2,49 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Google Ads (AW-18529460502) + Google Analytics 4 (<AJWA_GA4_ID>) via ONE gtag.js, Consent Mode v2 in BASIC mode:
-       gtag.js is NOT loaded before "Accept" -> no cookies and no cookieless pings before consent.
-       Choice stored in localStorage "ajw_cookie_consent_v2" (6 months). Same block on /, /fr/, /es/ and the 3 privacy pages. -->
+  <!-- Google Ads (AW-18529460502) + Google Analytics 4 (<AJWA_GA4_ID>), one gtag.js loaded for everyone.
+       Consent Mode v2, region-specific: denied by default in the EEA, the UK and Switzerland (banner shown there
+       by js/analytics.js after a /api/geo check), granted elsewhere. Choice kept in localStorage "ajw_cookie_consent_v2". -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    window.AJW_CONSENT_REGIONS = ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'];
     gtag('consent', 'default', {
       'analytics_storage': 'denied',
       'ad_storage': 'denied',
       'ad_user_data': 'denied',
       'ad_personalization': 'denied',
+      'region': window.AJW_CONSENT_REGIONS,
       'wait_for_update': 500
     });
-    gtag('set', 'url_passthrough', true);
+    gtag('consent', 'default', {
+      'analytics_storage': 'granted',
+      'ad_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted'
+    });
     gtag('set', 'ads_data_redaction', true);
-    window.AJW_TAGS = { aw: 'AW-18529460502', ga4: '<AJWA_GA4_ID>' };
-    window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
-    // Loads the single gtag.js loader, only once and only after consent.
-    window.ajwLoadGoogleTag = function () {
-      if (window.__ajwTagLoaded) return;
-      window.__ajwTagLoaded = true;
-      gtag('consent', 'update', {
-        'analytics_storage': 'granted',
-        'ad_storage': 'granted',
-        'ad_user_data': 'granted',
-        'ad_personalization': 'granted'
-      });
-      var s = document.createElement('script');
-      s.async = true;
-      s.id = 'gtag-loader';
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.AJW_TAGS.aw;
-      document.head.appendChild(s);
-      gtag('js', new Date());
-      if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
-      gtag('config', window.AJW_TAGS.aw);
-    };
+    gtag('set', 'url_passthrough', true);
     (function () {
       try {
         var c = JSON.parse(localStorage.getItem('ajw_cookie_consent_v2'));
-        if (c && c.v === 'granted' && Date.now() - c.t < 15724800000) window.ajwLoadGoogleTag();
+        if (c && (c.v === 'granted' || c.v === 'denied') && Date.now() - c.t < 15724800000) {
+          gtag('consent', 'update', {
+            'analytics_storage': c.v, 'ad_storage': c.v, 'ad_user_data': c.v, 'ad_personalization': c.v
+          });
+        }
       } catch (e) {}
     })();
+    window.AJW_TAGS = { aw: 'AW-18529460502', ga4: '<AJWA_GA4_ID>' };
+    window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
+    gtag('js', new Date());
+    if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
+    gtag('config', window.AJW_TAGS.aw);
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18529460502"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Privacy policy | Ajwa Dates Wholesale</title>
-  <meta name="description" content="How the Ajwa Dates Wholesale website uses Google Analytics and Google Ads cookies, only with your consent, and how to manage your choice.">
+  <meta name="description" content="How the Ajwa Dates Wholesale website uses Google Analytics and Google Ads cookies, to measure visits and WhatsApp contacts, the consent asked in the EEA, the UK and Switzerland, and how to opt out.">
   <meta name="robots" content="noindex, follow">
   <meta name="theme-color" content="#1b110b">
   <link rel="canonical" href="https://ajwadateswholesale.vercel.app/privacy/">
@@ -57,7 +54,7 @@
   <link rel="alternate" hreflang="x-default" href="https://ajwadateswholesale.vercel.app/privacy/">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/style.css?v=20261028">
 </head>
 <body class="page-legal">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16.04 3C9.4 3 4 8.33 4 14.9c0 2.1.56 4.15 1.62 5.95L4 29l8.4-1.6a12.2 12.2 0 0 0 3.64.55C22.66 27.95 28 22.62 28 16.05 28 9.48 22.66 3 16.04 3zm0 22.8c-1.13 0-2.24-.18-3.3-.53l-.6-.2-4.98.95.97-4.83-.22-.6a9.6 9.6 0 0 1-1.44-5.1c0-5.3 4.3-9.6 9.57-9.6s9.57 4.3 9.57 9.6-4.3 10.31-9.57 10.31zm5.27-7.07c-.29-.14-1.7-.83-1.96-.92-.27-.1-.46-.14-.65.14-.2.29-.75.92-.92 1.1-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.7-1.6-1.99-.17-.29-.02-.44.12-.58.13-.13.29-.34.43-.5.15-.18.2-.3.29-.49.1-.19.05-.36-.02-.5-.07-.15-.65-1.56-.89-2.13-.23-.56-.47-.48-.65-.49h-.55c-.19 0-.5.07-.77.36-.26.29-1 .98-1 2.4 0 1.4 1.03 2.77 1.17 2.96.15.19 2.03 3.1 4.92 4.34.69.3 1.22.47 1.64.6.69.22 1.32.19 1.81.12.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.25.17-1.37-.07-.12-.26-.19-.55-.33z"/></symbol></svg>
@@ -70,11 +67,6 @@
         <span class="brand__txt">Ajwa Dates <em>Wholesale</em></span>
       </a>
       <div class="header__actions">
-        <nav class="lang" aria-label="Choose language">
-          <a href="./" hreflang="en" lang="en" aria-current="page">EN</a>
-          <a href="../fr/confidentialite/" hreflang="fr" lang="fr">FR</a>
-          <a href="../es/privacidad/" hreflang="es" lang="es">ES</a>
-        </nav>
         <a class="btn btn--wa btn--sm header__wa" href="https://wa.me/212664738219?text=Hello%2C%20I%20would%20like%20a%20quote%20for%20wholesale%20Ajwa%20dates." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="header"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
       </div>
     </div>
@@ -90,7 +82,7 @@
       <p>The data controller is the publisher of the Ajwa Dates Wholesale website. For any question about your data, contact us on WhatsApp at <a href="https://wa.me/212664738219?text=Hello%2C%20I%20would%20like%20a%20quote%20for%20wholesale%20Ajwa%20dates." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="privacy">+212&nbsp;664&nbsp;738&nbsp;219</a>.</p>
 
       <h2>2. What data is collected?</h2>
-      <p>This site has no forms, no customer accounts and no online payments. The only data collected on the site comes from <strong>Google Analytics&nbsp;4</strong> audience measurement and <strong>Google Ads</strong> advertising measurement, and only if you accept it:</p>
+      <p>This site has no forms, no customer accounts and no online payments. The only data collected on the site comes from <strong>Google Analytics&nbsp;4</strong> audience measurement and <strong>Google Ads</strong> advertising measurement, used to measure visits and WhatsApp contacts. Visitors in the European Economic Area, the United Kingdom and Switzerland are asked for their consent first:</p>
       <ul>
         <li>the pages you view, the date and length of your visit, and the page you came from (search engine, social network, direct link);</li>
         <li>technical information: device type, operating system, browser, language, screen resolution;</li>
@@ -99,45 +91,50 @@
         <li>a random identifier stored in a cookie, which tells visits and visitors apart without knowing who you are;</li>
         <li>if you reach the site by clicking one of our Google ads, the identifier of that ad click ("gclid"), which shows whether the visit from the ad led to a click on a WhatsApp button (a "conversion").</li>
       </ul>
-      <p>This data is used for visit statistics, to understand how the site is used and improve it, and to measure the performance of our ads (how many visits from an ad lead to a WhatsApp enquiry). Where the law requires it (for example in the European Union or the United Kingdom), the legal basis is your consent.</p>
-      <p>With your consent, Google Ads may also use your visits to this site to show you our ads on other sites (remarketing and personalised advertising). Our Google Analytics property is linked to our Google Ads account for these purposes. You can decline or withdraw this consent at any time through the cookie banner or the "Manage cookies" link at the bottom of every page.</p>
+      <p>This data is used for visit statistics, to understand how the site is used and improve it, and to measure the performance of our ads (how many visits from an ad lead to a WhatsApp enquiry). In the European Economic Area, the United Kingdom and Switzerland, the legal basis is your consent; elsewhere, it is our legitimate interest in measuring and improving the site and our ads, which you can object to at any time (see section&nbsp;4).</p>
+      <p>Google Ads may also use your visits to this site to show you our ads on other sites (remarketing and personalised advertising). Our Google Analytics property is linked to our Google Ads account for these purposes. You can turn this off at any time (see section&nbsp;4).</p>
 
       <h2>3. Cookies and local storage</h2>
-      <p>Until you click "Accept", or if you click "Decline", no Google tag is loaded: nothing is sent to Google Analytics or Google Ads and no Google Analytics or Google Ads cookie is set. If you arrive from an ad, the ad click identifier may stay in the address (URL) of the pages you then view on the site, without being stored in a cookie.</p>
+      <p>The Google tag (Google Analytics and Google Ads) is loaded on every page. If you are in the European Economic Area, the United Kingdom or Switzerland, a banner asks for your consent and, until you click "Accept" (or if you click "Decline"), Google's Consent Mode is set to "denied": no Google Analytics or Google Ads cookie is set, no WhatsApp click is counted as an ad conversion, and Google only receives cookieless, aggregate signals (for example that a page was viewed) without an identifier that would recognise you. If you arrive from an ad, the ad click identifier may stay in the address (URL) of the pages you then view, without being stored in a cookie. To tell whether to show the banner, the site checks your country from your IP address (through our host, Vercel); this country is not stored.</p>
       <div class="table-wrap"><table>
         <thead><tr><th>Name</th><th>Purpose</th><th>Duration</th></tr></thead>
         <tbody>
-          <tr><td><code>_ga</code></td><td>Google Analytics cookie: tells visitors apart (random identifier). Set only after "Accept".</td><td>13&nbsp;months maximum</td></tr>
-          <tr><td><code>_ga_&lt;id&gt;</code></td><td>Google Analytics cookie: keeps the session state. Set only after "Accept".</td><td>13&nbsp;months maximum</td></tr>
-          <tr><td><code>_gcl_au</code></td><td>Google Ads cookie: measures conversions (WhatsApp clicks) that come from our ads. Set only after "Accept".</td><td>90&nbsp;days</td></tr>
-          <tr><td><code>_gcl_aw</code></td><td>Google Ads cookie: keeps the identifier of a click on one of our ads (gclid), if you arrived from an ad. Set only after "Accept".</td><td>90&nbsp;days</td></tr>
-          <tr><td><code>ajw_cookie_consent_v2</code></td><td>Your browser's local storage (not a cookie): remembers your "Accept" or "Decline" choice so you are not asked on every page.</td><td>6&nbsp;months</td></tr>
+          <tr><td><code>_ga</code></td><td>Google Analytics cookie: tells visitors apart (random identifier). In the EEA, the UK and Switzerland: only after "Accept".</td><td>13&nbsp;months maximum</td></tr>
+          <tr><td><code>_ga_&lt;id&gt;</code></td><td>Google Analytics cookie: keeps the session state. In the EEA, the UK and Switzerland: only after "Accept".</td><td>13&nbsp;months maximum</td></tr>
+          <tr><td><code>_gcl_au</code></td><td>Google Ads cookie: measures conversions (WhatsApp clicks) that come from our ads. In the EEA, the UK and Switzerland: only after "Accept".</td><td>90&nbsp;days</td></tr>
+          <tr><td><code>_gcl_aw</code></td><td>Google Ads cookie: keeps the identifier of a click on one of our ads (gclid), if you arrived from an ad. In the EEA, the UK and Switzerland: only after "Accept".</td><td>90&nbsp;days</td></tr>
+          <tr><td><code>ajw_cookie_consent_v2</code></td><td>Your browser's local storage (not a cookie): remembers your "Accept" or "Decline" choice (EEA, UK and Switzerland) so you are not asked on every page.</td><td>6&nbsp;months</td></tr>
         </tbody>
       </table></div>
 
-      <h2>4. Your consent and how to withdraw it</h2>
-      <p>On your first visit, a banner asks you to accept or decline audience measurement (Google Analytics) and advertising cookies (Google Ads). Declining is as easy as accepting and does not stop you from using the site. Your choice is kept for 6&nbsp;months, after which the banner appears again.</p>
-      <p>You can change your mind at any time: <button type="button" class="link-btn" data-consent-open>Manage my cookie choices</button> (also available through the "Manage cookies" link at the bottom of every page). If you decline or withdraw your consent, the Google Analytics cookies (<code>_ga</code>…) and Google Ads cookies (<code>_gcl</code>…) are deleted. You can also clear cookies and site data in your browser settings.</p>
+      <h2>4. Your consent and how to opt out</h2>
+      <p>In the European Economic Area, the United Kingdom and Switzerland, a banner asks you on your first visit to accept or decline audience measurement (Google Analytics) and advertising cookies (Google Ads). Declining is as easy as accepting and does not stop you from using the site. Your choice is kept for 6&nbsp;months, after which the banner appears again. You can change your mind at any time: <button type="button" class="link-btn" data-consent-open>Manage my cookie choices</button> (also available through the "Manage cookies" link at the bottom of every page). If you decline or withdraw your consent, the Google Analytics cookies (<code>_ga</code>…) and Google Ads cookies (<code>_gcl</code>…) are deleted.</p>
+      <p>Wherever you are, you can also opt out:</p>
+      <ul>
+        <li>in your browser settings, by blocking or deleting cookies for this site (or third-party cookies);</li>
+        <li>in your Google account, by turning off personalised ads in <a href="https://myadcenter.google.com/" target="_blank" rel="noopener">My Ad Center (Google ad settings)</a>;</li>
+        <li>for Google Analytics, by installing the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener">Google Analytics opt-out browser add-on</a>.</li>
+      </ul>
 
       <h2>5. How long data is kept</h2>
       <ul>
         <li>Google Analytics statistics: 14&nbsp;months maximum, then deleted automatically.</li>
         <li>Google Analytics cookies: 13&nbsp;months maximum.</li>
         <li>Google Ads cookies: 90&nbsp;days.</li>
-        <li>Your consent choice: 6&nbsp;months.</li>
+        <li>Your consent choice (EEA, UK and Switzerland): 6&nbsp;months.</li>
         <li>Messages you send us on WhatsApp: as long as needed to answer your request and follow up on your order.</li>
       </ul>
 
       <h2>6. Who receives this data?</h2>
       <ul>
-        <li><strong>Google</strong> (Google Analytics), as a service provider for audience measurement, and <strong>Google</strong> (Google Ads), for measuring the performance of our ads and, with your consent, remarketing and personalised advertising. For Google Ads, Google also uses this data under its own rules: <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">how Google uses data from sites that use its services</a>. Data may be transferred to the United States; Google LLC is certified under the EU–US Data Privacy Framework.</li>
+        <li><strong>Google</strong> (Google Analytics), as a service provider for audience measurement, and <strong>Google</strong> (Google Ads), for measuring the performance of our ads and, where allowed (in the EEA, the UK and Switzerland, with your consent), remarketing and personalised advertising. For Google Ads, Google also uses this data under its own rules: <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">how Google uses data from sites that use its services</a>. Data may be transferred to the United States; Google LLC is certified under the EU–US Data Privacy Framework.</li>
         <li><strong>Vercel</strong>, the site's host, which processes technical logs (including IP addresses) needed to run and secure the site.</li>
         <li><strong>WhatsApp</strong>: when you click a WhatsApp button, you leave the site; the messages you send are handled by WhatsApp under its own privacy policy.</li>
       </ul>
       <p>We never sell your personal data.</p>
 
       <h2>7. Your rights</h2>
-      <p>Depending on where you live (for example in the European Union, the United Kingdom or certain US states), you may have the right to access, correct, delete or receive a copy of your data, to object to or restrict its use, and to withdraw your consent at any time. To exercise these rights, message us on WhatsApp (+212&nbsp;664&nbsp;738&nbsp;219). Because Google Analytics and Google Ads data is pseudonymous, we cannot always link it to a specific person; the simplest option is then to decline or withdraw your consent and delete your cookies.</p>
+      <p>Depending on where you live (for example in the European Union, the United Kingdom or certain US states), you may have the right to access, correct, delete or receive a copy of your data, to object to or restrict its use, and to withdraw your consent at any time. To exercise these rights, message us on WhatsApp (+212&nbsp;664&nbsp;738&nbsp;219). Because Google Analytics and Google Ads data is pseudonymous, we cannot always link it to a specific person; the simplest option is then to decline or withdraw your consent, or use the opt-out options in section&nbsp;4, and delete your cookies.</p>
       <p>If you believe your rights have not been respected, you can file a complaint with your local data protection authority.</p>
 
       <h2>8. Changes</h2>
@@ -153,7 +150,7 @@
     </div>
   </footer>
 
-  <script src="../js/main.js" defer></script>
-  <script src="../js/analytics.js" defer></script>
+  <script src="../js/main.js?v=20261028" defer></script>
+  <script src="../js/analytics.js?v=20261028" defer></script>
 </body>
 </html>

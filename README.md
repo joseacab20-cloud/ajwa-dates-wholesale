@@ -118,12 +118,23 @@ Toutes les photos viennent de **Pexels** (licence Pexels : usage commercial grat
 
 Le mieux reste de remplacer ces photos par vos propres photos de produits (mêmes noms de fichiers, format WebP).
 
-## Suivi Google Ads + GA4 (Consent Mode v2, mode basique)
+## Suivi Google Ads + GA4 (Consent Mode v2 par région)
 
-- Bloc `<head>` : `tools/head-block.html` (inséré par `tools/build.py` dans les 3 pages d'accueil et les 3 pages de confidentialité). Il met les 4 signaux à `denied`, puis `url_passthrough` et `ads_data_redaction`. **Aucun gtag.js n'est chargé avant « Accepter »**, donc aucune requête Google et aucun ping sans cookie.
-- `js/analytics.js` : bandeau EN/FR/ES (nomme Google Analytics et Google Ads), choix stocké 6 mois dans `localStorage` `ajw_cookie_consent_v2`.
-  - Accepter : les 4 signaux passent à `granted`, puis un seul gtag.js (`id=AW-18529460502`) est injecté.
-  - Refuser : les 4 signaux restent à `denied` et les cookies `_ga*`/`_gcl*` sont supprimés. Si la personne retire son accord après avoir accepté, la page se recharge.
-  - Clic WhatsApp (`a[data-cta="whatsapp"]`), seulement après Accepter : `whatsapp_click` (GA4, `link_location` = `data-cta-location`), puis la conversion Ads `AW-18529460502/_PkpCOiWlq0dEJbCxINF` (50 GBP, beacon). Ce libellé ne sert que pour ce site.
-- GA4 : l'ID n'existe pas encore. Remplacer `<AJWA_GA4_ID>` par le vrai `G-…` dans `GA4_ID` (tools/build.py), puis relancer `python3 tools/build.py`. Tant que c'est le texte de remplacement, aucun événement GA4 n'est envoyé ; les conversions Ads fonctionnent déjà.
-- Pages de confidentialité (`noindex`, hors sitemap) : `/privacy/`, `/fr/confidentialite/`, `/es/privacidad/`. Leur texte est dans `tools/privacy_content.py`. Lien « Gérer les cookies » dans le pied de page.
+- Bloc `<head>` : `tools/head-block.html`, inséré par `tools/build.py` dans les 3 pages d'accueil et les 3 pages de confidentialité. Il contient :
+  - un consentement par défaut refusé (les 4 signaux) pour l'EEE, le Royaume-Uni et la Suisse (`region`, `wait_for_update` 500), puis accordé partout ailleurs ;
+  - `ads_data_redaction` et `url_passthrough` ;
+  - la réapplication du choix enregistré ;
+  - la configuration GA4 et `AW-18529460502`, et un seul gtag.js (`id=AW-18529460502`), chargé pour tout le monde.
+- `api/geo.js` (fonction Edge Vercel) renvoie `{"country": x-vercel-ip-country}` (cache privé de 5 min). Il n'y a aucun paramètre pour forcer le pays ; les tests simulent la réponse.
+- `js/analytics.js` appelle `/api/geo` en asynchrone (résultat gardé pour la session).
+  - Le bandeau EN/FR/ES (qui nomme Google Analytics et Google Ads) s'affiche dans l'EEE, au Royaume-Uni et en Suisse, ou si le pays est inconnu ou si l'appel échoue.
+  - Le choix est gardé 6 mois dans `localStorage` `ajw_cookie_consent_v2`.
+  - Accepter met les 4 signaux à `granted`.
+  - Refuser, ou retirer son accord, met les 4 signaux à `denied`, supprime `_ga*`/`_gcl*` et recharge la page.
+  - Le lien « Gérer les cookies » du pied de page rouvre le bandeau.
+- Clic WhatsApp (`a[data-cta="whatsapp"]`) :
+  - `whatsapp_click` part toujours vers GA4 (`link_location` = `data-cta-location`, `page_language`, beacon). Sans accord, Consent Mode l'envoie sans cookie.
+  - La conversion Ads `AW-18529460502/_PkpCOiWlq0dEJbCxINF` (50 GBP, beacon) part hors des régions concernées, ou après « Accepter ». Ce libellé ne sert que pour ce site.
+- GA4 : l'ID n'existe pas encore. Remplacer `<AJWA_GA4_ID>` par le vrai `G-…` dans `GA4_ID` (tools/build.py), puis relancer `python3 tools/build.py`.
+- Pages de confidentialité (`noindex`, hors sitemap) : `/privacy/`, `/fr/confidentialite/`, `/es/privacidad/`. Leur texte est dans `tools/privacy_content.py`.
+- Sélecteur de langue : retiré de l'en-tête (demande de Jose), gardé en liens discrets EN / FR / ES dans le pied de page.
