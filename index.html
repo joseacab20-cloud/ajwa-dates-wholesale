@@ -2,49 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Google Ads (AW-18529460502) + Google Analytics 4 (<AJWA_GA4_ID>) via ONE gtag.js, Consent Mode v2 in BASIC mode:
-       gtag.js is NOT loaded before "Accept" -> no cookies and no cookieless pings before consent.
-       Choice stored in localStorage "ajw_cookie_consent_v2" (6 months). Same block on /, /fr/, /es/ and the 3 privacy pages. -->
+  <!-- Google Ads (AW-18529460502) + Google Analytics 4 (<AJWA_GA4_ID>), one gtag.js loaded for everyone.
+       Consent Mode v2, region-specific: denied by default in the EEA, the UK and Switzerland (banner shown there
+       by js/analytics.js after a /api/geo check), granted elsewhere. Choice kept in localStorage "ajw_cookie_consent_v2". -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    window.AJW_CONSENT_REGIONS = ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','IS','LI','NO','GB','CH'];
     gtag('consent', 'default', {
       'analytics_storage': 'denied',
       'ad_storage': 'denied',
       'ad_user_data': 'denied',
       'ad_personalization': 'denied',
+      'region': window.AJW_CONSENT_REGIONS,
       'wait_for_update': 500
     });
-    gtag('set', 'url_passthrough', true);
+    gtag('consent', 'default', {
+      'analytics_storage': 'granted',
+      'ad_storage': 'granted',
+      'ad_user_data': 'granted',
+      'ad_personalization': 'granted'
+    });
     gtag('set', 'ads_data_redaction', true);
-    window.AJW_TAGS = { aw: 'AW-18529460502', ga4: '<AJWA_GA4_ID>' };
-    window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
-    // Loads the single gtag.js loader, only once and only after consent.
-    window.ajwLoadGoogleTag = function () {
-      if (window.__ajwTagLoaded) return;
-      window.__ajwTagLoaded = true;
-      gtag('consent', 'update', {
-        'analytics_storage': 'granted',
-        'ad_storage': 'granted',
-        'ad_user_data': 'granted',
-        'ad_personalization': 'granted'
-      });
-      var s = document.createElement('script');
-      s.async = true;
-      s.id = 'gtag-loader';
-      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window.AJW_TAGS.aw;
-      document.head.appendChild(s);
-      gtag('js', new Date());
-      if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
-      gtag('config', window.AJW_TAGS.aw);
-    };
+    gtag('set', 'url_passthrough', true);
     (function () {
       try {
         var c = JSON.parse(localStorage.getItem('ajw_cookie_consent_v2'));
-        if (c && c.v === 'granted' && Date.now() - c.t < 15724800000) window.ajwLoadGoogleTag();
+        if (c && (c.v === 'granted' || c.v === 'denied') && Date.now() - c.t < 15724800000) {
+          gtag('consent', 'update', {
+            'analytics_storage': c.v, 'ad_storage': c.v, 'ad_user_data': c.v, 'ad_personalization': c.v
+          });
+        }
       } catch (e) {}
     })();
+    window.AJW_TAGS = { aw: 'AW-18529460502', ga4: '<AJWA_GA4_ID>' };
+    window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
+    gtag('js', new Date());
+    if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
+    gtag('config', window.AJW_TAGS.aw);
   </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18529460502"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Ajwa Dates Wholesale | Bulk Madinah Ajwa Supplier</title>
   <meta name="description" content="Ajwa dates wholesale: premium Madinah Ajwa in bulk cartons, vacuum packs, retail sizes and private label for importers and distributors. Get a quote on WhatsApp.">
@@ -78,7 +75,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
   <link rel="preload" as="image" href="images/dattes-ajwa-en-gros-800.webp" imagesrcset="images/dattes-ajwa-en-gros-480.webp 480w, images/dattes-ajwa-en-gros-800.webp 800w" imagesizes="(min-width: 960px) 40vw, 88vw" fetchpriority="high">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20261028">
 
   <script type="application/ld+json">
 {
@@ -216,11 +213,6 @@
         <a href="#faq">FAQ</a>
       </nav>
       <div class="header__actions">
-        <nav class="lang" aria-label="Choose language">
-          <a href="./" hreflang="en" lang="en" aria-current="page">EN</a>
-          <a href="fr/" hreflang="fr" lang="fr">FR</a>
-          <a href="es/" hreflang="es" lang="es">ES</a>
-        </nav>
         <a class="btn btn--wa btn--sm header__wa" href="https://wa.me/212664738219?text=Hello%2C%20I%20would%20like%20a%20quote%20for%20wholesale%20Ajwa%20dates." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="header"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
         <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Open menu"><span></span><span></span><span></span></button>
       </div>
@@ -576,7 +568,7 @@
 
   <a class="wa-float" href="https://wa.me/212664738219?text=Hello%2C%20I%20would%20like%20a%20quote%20for%20wholesale%20Ajwa%20dates." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="floating" aria-label="Contact us on WhatsApp (opens in a new tab)"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg></a>
 
-  <script src="js/main.js" defer></script>
-  <script src="js/analytics.js" defer></script>
+  <script src="js/main.js?v=20261028" defer></script>
+  <script src="js/analytics.js?v=20261028" defer></script>
 </body>
 </html>
