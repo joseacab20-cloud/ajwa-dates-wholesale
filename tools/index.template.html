@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{LANG}}">
 <head>
-  <!-- ============================================================
-       GOOGLE TAG MANAGER (HEAD) — emplacement réservé, vide.
-       Collez ici le 1er extrait GTM (<script>…GTM-XXXXXXX…</script>).
-       Aucun outil de suivi n'est installé pour l'instant.
-       ============================================================ -->
-
   <meta charset="utf-8">
+{{TRACKING_HEAD}}
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{{meta.title}}</title>
   <meta name="description" content="{{meta.description}}">
@@ -47,13 +42,6 @@
   </script>
 </head>
 <body>
-  <!-- ============================================================
-       GOOGLE TAG MANAGER (BODY / noscript) — emplacement réservé, vide.
-       Collez ici le 2e extrait GTM (<noscript><iframe …></iframe></noscript>).
-       Chaque lien WhatsApp porte data-cta="whatsapp" + data-cta-location="…"
-       (déclencheur GTM : clic sur a[data-cta="whatsapp"]).
-       ============================================================ -->
-
   {{ICON_SPRITE}}
   <a class="skip" href="#main">{{a11y.skip}}</a>
 
@@ -380,11 +368,13 @@
     </div>
     <div class="container footer__bottom">
       <p>© <span id="year">2026</span> {{site.name}} — {{footer.rights}}</p>
+      <p class="legal-links"><a href="{{PRIVACY_URL}}">{{footer.privacy}}</a> · <button type="button" class="link-btn" data-consent-open>{{footer.cookies}}</button></p>
     </div>
   </footer>
 
   <a class="wa-float" href="{{WA}}" target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="floating" aria-label="{{a11y.waFloat}}">{{ICON_WA_LG}}</a>
 
   <script src="{{P}}js/main.js" defer></script>
+  <script src="{{P}}js/analytics.js" defer></script>
 </body>
 </html>

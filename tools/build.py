@@ -4,7 +4,8 @@
     index.html     -> English (default) https://ajwadateswholesale.vercel.app/
     fr/index.html  -> French            https://ajwadateswholesale.vercel.app/fr/
     es/index.html  -> Spanish           https://ajwadateswholesale.vercel.app/es/
-and sitemap.xml. Asset paths are RELATIVE, so index.html also opens with a double-click.
+the 3 privacy pages (/privacy/, /fr/confidentialite/, /es/privacidad/ from
+tools/privacy.template.html + tools/privacy_content.py) and sitemap.xml (home pages only; privacy pages are noindex). Asset paths are RELATIVE, so index.html also opens with a double-click.
 Usage (from the project folder):  python3 tools/build.py
 """
 import json, html, re, urllib.parse, pathlib
@@ -13,8 +14,11 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://ajwadateswholesale.vercel.app"   # production domain (no trailing slash)
 LANGS = ["en", "fr", "es"]                        # first = default language, served at /
 PATHS = {"en": "/", "fr": "/fr/", "es": "/es/"}
+PRIVACY_PATHS = {"en": "/privacy/", "fr": "/fr/confidentialite/", "es": "/es/privacidad/"}
+CONSENT_KEY = "ajw_cookie_consent_v2"   # must match KEY in js/analytics.js
 LASTMOD = "2026-10-28"
 WA_NUMBER = "212664738219"                        # WhatsApp number (digits only)
+WA_DISPLAY = "+212 664 738 219"
 FAQ_COUNT = 8
 
 # Indicative Ajwa calendar for Madinah (index 0 = January). Edit here if needed.
@@ -22,6 +26,17 @@ HARVEST = ["stock", "stock", "stock", "stock", "stock", "stock",
            "early", "peak", "main", "new", "stock", "stock"]
 
 T = json.loads((ROOT / "tools/translations.json").read_text(encoding="utf-8"))
+
+import sys; sys.path.insert(0, str(ROOT / "tools"))
+import privacy_content as PV
+
+# Consent Mode v2 (BASIC mode) head block — Tracking Architect handoff block A
+# (/workspace/argangold/ajwa/builder-handoff.md). Same block on the 3 home pages and the 3 privacy pages.
+# gtag.js is NOT in the HTML: ajwLoadGoogleTag() injects one loader (id=AW-…) only after "Accept".
+GA4_ID = "<AJWA_GA4_ID>"   # replace with the real G-XXXXXXXX of the ajwadateswholesale.vercel.app GA4 property
+ADS_ID = "AW-18529460502"
+HEAD_BLOCK = (ROOT / "tools/head-block.html").read_text(encoding="utf-8").rstrip("\n")
+TRACKING_HEAD = HEAD_BLOCK.replace("<AJWA_GA4_ID>", GA4_ID).replace("ajw_cookie_consent_v2", CONSENT_KEY)
 
 def wa(lang):
     return f"https://wa.me/{WA_NUMBER}?text=" + urllib.parse.quote(T[lang]["wa.text"])
@@ -34,12 +49,18 @@ def prefix(lang):
     depth = PATHS[lang].strip("/").count("/") + (1 if PATHS[lang] != "/" else 0)
     return "../" * depth
 
-def rel_link(cur, target):
-    """Relative link from page `cur` to page `target` (folder URL with trailing slash)."""
-    if cur == target:
+def rel_path(cur_path, target_path):
+    """Relative link between two folder URLs (both with trailing slash)."""
+    if cur_path == target_path:
         return "./"
-    p = prefix(cur) + PATHS[target].lstrip("/")
-    return p or "./"
+    if target_path.startswith(cur_path):
+        return target_path[len(cur_path):]
+    depth = cur_path.strip("/").count("/") + (1 if cur_path != "/" else 0)
+    return ("../" * depth + target_path.lstrip("/")) or "./"
+
+def rel_link(cur, target):
+    """Relative link from home page `cur` to home page `target`."""
+    return rel_path(PATHS[cur], PATHS[target])
 
 def faq_ld(lang):
     d = T[lang]
@@ -159,6 +180,8 @@ def render(lang):
     s = s.replace("{{CANONICAL}}", url(lang))
     s = s.replace("{{HREFLANG}}", HREFLANG)
     s = s.replace("{{LANG_LINKS}}", lang_links(lang))
+    s = s.replace("{{TRACKING_HEAD}}", TRACKING_HEAD)
+    s = s.replace("{{PRIVACY_URL}}", rel_path(PATHS[lang], PRIVACY_PATHS[lang]))
     s = s.replace("{{OG_ALT}}", "\n".join(
         f'  <meta property="og:locale:alternate" content="{T[l]["meta.ogLocale"]}">' for l in LANGS if l != lang))
     for k, v in ICONS.items():
@@ -166,6 +189,51 @@ def render(lang):
     s = re.sub(r"\{\{([a-zA-Z0-9_.]+)\}\}", lambda m: html.escape(d[m.group(1)]), s)
     assert "{{" not in s, lang
     return s
+
+PV_TPL = (ROOT / "tools/privacy.template.html").read_text(encoding="utf-8")
+PV_HREFLANG = "\n".join(
+    [f'  <link rel="alternate" hreflang="{l}" href="{SITE + PRIVACY_PATHS[l]}">' for l in LANGS]
+    + [f'  <link rel="alternate" hreflang="x-default" href="{SITE + PRIVACY_PATHS[LANGS[0]]}">'])
+
+def render_privacy(lang):
+    d = T[lang]
+    cur = PRIVACY_PATHS[lang]
+    m = PV.META[lang]
+    body = PV.BODY[lang].strip("\n")
+    body = (body.replace("{SITE}", SITE).replace("{WA}", html.escape(wa(lang)))
+                .replace("{PHONE}", WA_DISPLAY.replace(" ", "&nbsp;")).replace("{KEY}", CONSENT_KEY)
+                .replace("{MANAGE}", html.escape(m["manage"])))
+    if lang == "fr":
+        body = fr_typo(body)
+        m = {k: fr_typo(v) for k, v in m.items()}
+    body = "\n".join("      " + ln if ln else ln for ln in body.split("\n"))
+    links = "\n".join(
+        f'          <a href="{rel_path(cur, PRIVACY_PATHS[l])}" hreflang="{l}" lang="{l}"{" aria-current=\"page\"" if l == lang else ""}>{l.upper()}</a>'
+        for l in ["en", "fr", "es"])
+    s = PV_TPL
+    s = s.replace("{{TRACKING_HEAD}}", TRACKING_HEAD)
+    s = s.replace("{{PV_BODY}}", body)
+    for k, v in {"PV_TITLE": m["title"], "PV_DESCRIPTION": m["description"], "PV_H1": m["h1"],
+                 "PV_BACK": m["back"], "PV_UPDATED": PV.UPDATED[lang]}.items():
+        s = s.replace("{{" + k + "}}", html.escape(v))
+    s = s.replace("{{WA}}", html.escape(wa(lang)))
+    s = s.replace("{{LANG}}", lang)
+    s = s.replace("{{P}}", "../" * cur.strip("/").count("/") + "../")
+    s = s.replace("{{CANONICAL}}", SITE + cur)
+    s = s.replace("{{HREFLANG}}", PV_HREFLANG)
+    s = s.replace("{{LANG_LINKS}}", links)
+    s = s.replace("{{HOME_URL}}", rel_path(cur, PATHS[lang]))
+    for k, v in ICONS.items():
+        s = s.replace("{{" + k + "}}", v)
+    s = re.sub(r"\{\{([a-zA-Z0-9_.]+)\}\}", lambda mm: html.escape(d[mm.group(1)]), s)
+    assert "{{" not in s, lang
+    return s
+
+for lang in LANGS:
+    out = ROOT / PRIVACY_PATHS[lang].strip("/") / "index.html"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(render_privacy(lang), encoding="utf-8")
+    print("generated", out.relative_to(ROOT))
 
 for lang in LANGS:
     out = ROOT / "index.html" if PATHS[lang] == "/" else ROOT / PATHS[lang].strip("/") / "index.html"
