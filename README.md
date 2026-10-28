@@ -1,21 +1,21 @@
-# Dattes Ajwa en Gros — site one-page FR / EN / ES
+# Ajwa Dates Wholesale — site one-page EN / FR / ES
 
 Site vitrine d'une seule page, en trois langues, chacune à sa propre adresse :
 
 | Langue | Adresse | Mot-clé SEO principal |
 |---|---|---|
-| Français (**par défaut**) | `https://ajwadateswholesale.vercel.app/` | « dattes ajwa en gros » |
-| Anglais | `https://ajwadateswholesale.vercel.app/en/` | « ajwa dates wholesale » |
+| Anglais (**par défaut**) | `https://ajwadateswholesale.vercel.app/` | « ajwa dates wholesale » |
+| Français | `https://ajwadateswholesale.vercel.app/fr/` | « dattes ajwa en gros » |
 | Espagnol | `https://ajwadateswholesale.vercel.app/es/` | « dátiles ajwa al por mayor » |
 
-> Le domaine `ajwadateswholesale.vercel.app` est **prévu** (le site n'est pas encore déployé).
+> Le site est en ligne sur `ajwadateswholesale.vercel.app` (Vercel). L'ancienne adresse `/en/` redirige vers `/`.
 > S'il change, modifiez `SITE` dans `tools/build.py`, `robots.txt`, puis relancez la génération.
 
 Objectif : faire contacter le vendeur sur **WhatsApp** (`https://wa.me/212661111111`).
 
 - 100 % statique : HTML + CSS + un petit JavaScript (menu mobile). **Aucun framework, aucune installation.**
 - Chaque langue est une **vraie page HTML complète** : titre, description, Open Graph / Twitter, `canonical`,
-  `hreflang` (fr, en, es, `x-default` → page française), FAQ JSON-LD, textes alternatifs, message WhatsApp
+  `hreflang` (en, fr, es, `x-default` → page anglaise), FAQ JSON-LD, textes alternatifs, message WhatsApp
   pré-rempli dans la bonne langue. Google lit chaque version sans JavaScript.
 - Sélecteur **EN / FR / ES** (en-tête et pied de page) = simples liens. Pas de redirection automatique.
 - Bouton WhatsApp flottant + 16 liens WhatsApp par page, tous marqués `data-cta="whatsapp"` et `data-cta-location="…"`.
@@ -36,23 +36,23 @@ et le sélecteur de langue fonctionnent (testé).
 npx serve .
 # ou, sans Node : python3 -m http.server 8000
 ```
-Puis ouvrez l'adresse affichée (ex. http://localhost:3000/ — français), `/en/` et `/es/`.
+Puis ouvrez l'adresse affichée (ex. http://localhost:3000/ — anglais), `/fr/` et `/es/`.
 
 ---
 
 ## 2. Structure du projet
 
 ```
-index.html                 ← page française (générée)
-en/index.html              ← page anglaise (générée)
+index.html                 ← page anglaise (générée)
+fr/index.html              ← page française (générée)
 es/index.html              ← page espagnole (générée)
 css/style.css              ← le design (or, brun profond, ambre)
 js/main.js                 ← menu mobile, ombre de l'en-tête, liens de langue en double-clic
 images/                    ← photos WebP optimisées + og-image.jpg + apple-touch-icon.png
 favicon.svg                ← icône du site
 robots.txt, sitemap.xml    ← pour Google (sitemap généré)
-vercel.json                ← adresses propres, /fr → /, cache
-tools/translations.json    ← TOUS les textes, en FR / EN / ES
+vercel.json                ← adresses propres, /en → / (redirection 308), cache
+tools/translations.json    ← TOUS les textes, en EN / FR / ES
 tools/index.template.html  ← le modèle HTML commun aux 3 pages
 tools/build.py             ← génère les 3 pages + sitemap.xml
 ```
@@ -72,7 +72,7 @@ FAQ · appel à l'action final · pied de page (About Ajwa | Harvest Season | Ce
    ```bash
    python3 tools/build.py
    ```
-   Cela réécrit `index.html`, `en/index.html`, `es/index.html` et `sitemap.xml`.
+   Cela réécrit `index.html`, `fr/index.html`, `es/index.html` et `sitemap.xml`.
    **Ne modifiez pas directement ces fichiers HTML** : ils seraient écrasés à la prochaine génération.
 
 Autres réglages dans `tools/build.py` :
