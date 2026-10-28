@@ -280,3 +280,56 @@ ul,ol{margin:0;padding:0;list-style:none}
 /* Floating WhatsApp */
 .wa-float{position:fixed;right:18px;bottom:18px;z-index:60;width:60px;height:60px;border-radius:50%;background:var(--wa);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 14px 30px -10px rgba(10,90,45,.75),0 0 0 4px rgba(255,255,255,.9);transition:transform .15s}
 .wa-float:hover{transform:scale(1.06)}
+
+/* ==========================================================================
+   Mobile / iOS Safari fixes (iPhone 13 Pro audit). Desktop layout unchanged.
+   ========================================================================== */
+/* Safari < 18 needs the prefixed blur; solid fallback where unsupported */
+.header{-webkit-backdrop-filter:saturate(140%) blur(8px)}
+@supports not ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){.header{background:var(--ink)}}
+/* Notch / rounded corners in landscape (viewport-fit=cover): keep content inside the safe area */
+.container{width:min(1200px,100% - 2.5rem - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px))}
+.container--narrow{width:min(860px,100% - 2.5rem - env(safe-area-inset-left,0px) - env(safe-area-inset-right,0px))}
+/* Long French / Spanish words never push the layout wider than the screen */
+h1,h2,h3,p,li,dt,dd,summary,figcaption,.btn{overflow-wrap:break-word}
+.header__inner>*{min-width:0}
+/* Floating WhatsApp button clears the iOS home bar and the notch */
+.wa-float{right:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.footer{padding-bottom:calc(6rem + env(safe-area-inset-bottom,0px))}
+@media (min-width:900px){.footer{padding-bottom:calc(3rem + env(safe-area-inset-bottom,0px))}}
+/* Decorative frame behind the Madinah photo stops at the photo (no longer runs over the caption) */
+.about__media::before{inset:18px -14px auto 18px;aspect-ratio:4/5}
+/* Comfortable tap targets (44px) */
+.btn--sm{min-height:44px}
+.footer__links a{min-height:44px}
+/* Open mobile menu scrolls inside short screens (landscape) */
+.nav-open .nav{max-height:calc(100vh - 68px);max-height:calc(100dvh - 68px);overflow-y:auto;-webkit-overflow-scrolling:touch;padding-left:max(1.25rem,env(safe-area-inset-left,0px));padding-right:max(1.25rem,env(safe-area-inset-right,0px))}
+
+@media (max-width:640px){
+  /* Header: logo text on two lines, switcher + menu never squeezed or cut off */
+  .header__inner{gap:.6rem;min-height:64px}
+  .brand{flex:1 1 auto;gap:.5rem}
+  .brand img{flex:none}
+  .brand__txt{white-space:normal;font-size:1.12rem;line-height:1.02}
+  .brand__txt em{display:block}
+  .header__actions{flex:none;gap:.45rem}
+  .lang a{padding:0;font-size:.78rem}
+  html{scroll-padding-top:76px}
+  /* Hero: full-width buttons, smaller arch photo so the first screen is not one huge image */
+  .hero .cta-row .btn{flex:1 1 100%}
+  .hero__media{max-width:330px}
+  .hero__badge{left:-.25rem}
+  /* FAQ rows and footer switcher stay easy to tap */
+  .faq__item summary{padding:.95rem 1rem}
+  .lang--footer a{min-height:44px}
+}
+@media (max-width:1079px){.lang a{min-width:44px;min-height:44px}.brand{min-height:44px}}
+@media (max-width:359px){
+  .brand__txt{font-size:1rem}
+  .brand img{width:28px;height:28px}
+  .lang a{min-width:40px}
+}
+/* Landscape phones: compact hero so content is visible without endless scrolling */
+@media (max-height:500px) and (orientation:landscape){
+  .hero__media{max-width:300px}
+}
