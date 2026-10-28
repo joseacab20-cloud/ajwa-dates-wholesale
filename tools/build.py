@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Builds the 3 static, fully pre-rendered pages from tools/translations.json
 + tools/index.template.html:
-    index.html     -> French (default)  https://ajwadateswholesale.vercel.app/
-    en/index.html  -> English           https://ajwadateswholesale.vercel.app/en/
+    index.html     -> English (default) https://ajwadateswholesale.vercel.app/
+    fr/index.html  -> French            https://ajwadateswholesale.vercel.app/fr/
     es/index.html  -> Spanish           https://ajwadateswholesale.vercel.app/es/
 and sitemap.xml. Asset paths are RELATIVE, so index.html also opens with a double-click.
 Usage (from the project folder):  python3 tools/build.py
@@ -11,8 +11,8 @@ import json, html, re, urllib.parse, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SITE = "https://ajwadateswholesale.vercel.app"   # production domain (no trailing slash)
-LANGS = ["fr", "en", "es"]                        # first = default language, served at /
-PATHS = {"fr": "/", "en": "/en/", "es": "/es/"}
+LANGS = ["en", "fr", "es"]                        # first = default language, served at /
+PATHS = {"en": "/", "fr": "/fr/", "es": "/es/"}
 LASTMOD = "2026-10-28"
 WA_NUMBER = "212661111111"                        # WhatsApp number (digits only)
 FAQ_COUNT = 8
