@@ -38,8 +38,47 @@
     window.AJW_TAGS = { aw: 'AW-18529460502', ga4: 'G-B0VQF4YB7S' };
     window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
     gtag('js', new Date());
-    if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
-    gtag('config', window.AJW_TAGS.aw);
+    // The GA4 / Ads config (first hit, first cookie) waits for the /api/geo answer. In the EEA, the UK and
+    // Switzerland, or if the country is unknown, the check fails or times out (2 s), all 4 signals are set to
+    // denied first (whatever Google's own region detection says), until "Accept". Elsewhere: granted, as before.
+    (function () {
+      var started = false;
+      function startTags() {
+        if (started) return; started = true;
+        if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
+        gtag('config', window.AJW_TAGS.aw);
+      }
+      var cbs = [];
+      window.ajwOnGeo = function (cb) { if (window.AJW_GEO !== undefined) cb(window.AJW_GEO); else cbs.push(cb); };
+      function geoDone(country) {
+        if (window.AJW_GEO !== undefined) return;
+        country = /^[A-Z]{2}$/.test(country = String(country || '').toUpperCase()) ? country : '';
+        window.AJW_GEO = country;
+        if (!country || window.AJW_CONSENT_REGIONS.indexOf(country) !== -1) {
+          gtag('consent', 'update', {
+            'analytics_storage': 'denied', 'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied'
+          });
+        }
+        startTags();
+        while (cbs.length) cbs.shift()(country);
+      }
+      var stored = null;
+      try { stored = JSON.parse(localStorage.getItem('ajw_cookie_consent_v2')); } catch (e) {}
+      if (stored && (stored.v === 'granted' || stored.v === 'denied') && Date.now() - stored.t < 15724800000) { startTags(); return; }
+      var cached = null;
+      try { cached = sessionStorage.getItem('ajw_geo'); } catch (e) {}
+      if (cached !== null) { geoDone(cached); return; }
+      if (!window.fetch || !/^https?:$/.test(location.protocol)) { geoDone(''); return; }
+      setTimeout(function () { geoDone(''); }, 2000);
+      fetch('/api/geo/', { credentials: 'omit' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) {
+          var c = (d && d.country) || '';
+          if (window.AJW_GEO === undefined) { try { sessionStorage.setItem('ajw_geo', c); } catch (e) {} }
+          geoDone(c);
+        })
+        .catch(function () { geoDone(''); });
+    })();
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18529460502"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -55,7 +94,7 @@
   <link rel="alternate" hreflang="x-default" href="https://ajwadateswholesale.vercel.app/privacy/">
   <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../../images/apple-touch-icon.png">
-  <link rel="stylesheet" href="../../css/style.css?v=20261028b">
+  <link rel="stylesheet" href="../../css/style.css?v=20261028c">
 </head>
 <body class="page-legal">
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="i-wa" viewBox="0 0 32 32"><path fill="currentColor" d="M16.04 3C9.4 3 4 8.33 4 14.9c0 2.1.56 4.15 1.62 5.95L4 29l8.4-1.6a12.2 12.2 0 0 0 3.64.55C22.66 27.95 28 22.62 28 16.05 28 9.48 22.66 3 16.04 3zm0 22.8c-1.13 0-2.24-.18-3.3-.53l-.6-.2-4.98.95.97-4.83-.22-.6a9.6 9.6 0 0 1-1.44-5.1c0-5.3 4.3-9.6 9.57-9.6s9.57 4.3 9.57 9.6-4.3 10.31-9.57 10.31zm5.27-7.07c-.29-.14-1.7-.83-1.96-.92-.27-.1-.46-.14-.65.14-.2.29-.75.92-.92 1.1-.17.2-.34.22-.63.08-.29-.15-1.22-.45-2.32-1.43-.86-.76-1.44-1.7-1.6-1.99-.17-.29-.02-.44.12-.58.13-.13.29-.34.43-.5.15-.18.2-.3.29-.49.1-.19.05-.36-.02-.5-.07-.15-.65-1.56-.89-2.13-.23-.56-.47-.48-.65-.49h-.55c-.19 0-.5.07-.77.36-.26.29-1 .98-1 2.4 0 1.4 1.03 2.77 1.17 2.96.15.19 2.03 3.1 4.92 4.34.69.3 1.22.47 1.64.6.69.22 1.32.19 1.81.12.55-.08 1.7-.69 1.94-1.36.24-.67.24-1.25.17-1.37-.07-.12-.26-.19-.55-.33z"/></symbol></svg>
@@ -68,7 +107,7 @@
         <span class="brand__txt">Tâmaras Ajwa <em>por Grosso</em></span>
       </a>
       <div class="header__actions">
-        <a class="btn btn--wa btn--sm header__wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="header"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
+        <a class="btn btn--wa btn--sm header__wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="header"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
       </div>
     </div>
   </header>
@@ -80,13 +119,13 @@
       <p>Esta página explica que dados são recolhidos quando visita o site Tâmaras Ajwa por Grosso (https://ajwadateswholesale.vercel.app/), porquê, durante quanto tempo são conservados e como exercer os seus direitos.</p>
 
       <h2>1. Quem é responsável pelos seus dados?</h2>
-      <p>O responsável pelo tratamento é o editor do site Tâmaras Ajwa por Grosso. Para qualquer questão sobre os seus dados, contacte-nos no WhatsApp através do <a href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="privacy">+212&nbsp;664&nbsp;738&nbsp;219</a>.</p>
+      <p>O responsável pelo tratamento é o editor do site Tâmaras Ajwa por Grosso. Para qualquer questão sobre os seus dados, fale conosco (ou contacte-nos) no WhatsApp pelo <a href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="privacy">+212&nbsp;664&nbsp;738&nbsp;219</a>.</p>
 
       <h2>2. Que dados são recolhidos?</h2>
       <p>Este site não tem formulários, contas de cliente nem pagamentos online. Os únicos dados recolhidos no site provêm da medição de audiência do <strong>Google Analytics&nbsp;4</strong> e da medição publicitária do <strong>Google Ads</strong>, usadas para medir as visitas e os contactos por WhatsApp. Aos visitantes do Espaço Económico Europeu, do Reino Unido e da Suíça é pedido primeiro o consentimento:</p>
       <ul>
         <li>as páginas que consulta, a data e a duração da visita e a página de onde veio (motor de pesquisa, rede social, link direto);</li>
-        <li>informações técnicas: tipo de dispositivo, sistema operativo, navegador, idioma, resolução do ecrã;</li>
+        <li>informações técnicas: tipo de dispositivo, sistema operativo, navegador, idioma, resolução da tela;</li>
         <li>uma localização aproximada (país, região, cidade), obtida a partir do seu endereço IP. Segundo a Google, o Google Analytics&nbsp;4 não regista nem guarda endereços IP;</li>
         <li>os cliques nos botões do WhatsApp (o local do botão na página e o endereço do link);</li>
         <li>um identificador aleatório guardado num cookie, que distingue visitas e visitantes sem saber quem é;</li>
@@ -123,13 +162,13 @@
         <li>Cookies do Google Analytics: 13&nbsp;meses no máximo.</li>
         <li>Cookies do Google Ads: 90&nbsp;dias.</li>
         <li>A sua escolha de consentimento (EEE, Reino Unido e Suíça): 6&nbsp;meses.</li>
-        <li>Mensagens que nos envia pelo WhatsApp: o tempo necessário para responder ao seu pedido e acompanhar a sua encomenda.</li>
+        <li>Mensagens que nos envia pelo WhatsApp: o tempo necessário para responder ao seu pedido e acompanhar o seu pedido.</li>
       </ul>
 
       <h2>6. Quem recebe estes dados?</h2>
       <ul>
         <li><strong>Google</strong> (Google Analytics), como prestador de serviços de medição de audiência, e <strong>Google</strong> (Google Ads), para medir o desempenho dos nossos anúncios e, quando permitido (no EEE, no Reino Unido e na Suíça, com o seu consentimento), para remarketing e publicidade personalizada. No caso do Google Ads, a Google usa também estes dados segundo as suas próprias regras: <a href="https://policies.google.com/technologies/partner-sites?hl=pt-PT" target="_blank" rel="noopener">como a Google usa os dados dos sites que utilizam os seus serviços</a>. Os dados podem ser transferidos para os Estados Unidos; a Google LLC está certificada ao abrigo do Quadro de Privacidade de Dados UE–EUA (Data Privacy Framework).</li>
-        <li><strong>Vercel</strong>, o alojamento do site, que trata os registos técnicos (incluindo endereços IP) necessários ao funcionamento e à segurança do site.</li>
+        <li><strong>Vercel</strong>, o alojamento do site, que trata os registros técnicos (incluindo endereços IP) necessários ao funcionamento e à segurança do site.</li>
         <li><strong>WhatsApp</strong>: ao clicar num botão do WhatsApp, sai do site; as mensagens que envia são tratadas pelo WhatsApp segundo a sua própria política de privacidade.</li>
       </ul>
       <p>Nunca vendemos os seus dados pessoais.</p>
@@ -151,7 +190,7 @@
     </div>
   </footer>
 
-  <script src="../../js/main.js?v=20261028b" defer></script>
-  <script src="../../js/analytics.js?v=20261028b" defer></script>
+  <script src="../../js/main.js?v=20261028c" defer></script>
+  <script src="../../js/analytics.js?v=20261028c" defer></script>
 </body>
 </html>

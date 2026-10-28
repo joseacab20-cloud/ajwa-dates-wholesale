@@ -38,13 +38,52 @@
     window.AJW_TAGS = { aw: 'AW-18529460502', ga4: 'G-B0VQF4YB7S' };
     window.ajwGa4Ready = function () { return /^G-[A-Z0-9]+$/.test(window.AJW_TAGS.ga4); };
     gtag('js', new Date());
-    if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
-    gtag('config', window.AJW_TAGS.aw);
+    // The GA4 / Ads config (first hit, first cookie) waits for the /api/geo answer. In the EEA, the UK and
+    // Switzerland, or if the country is unknown, the check fails or times out (2 s), all 4 signals are set to
+    // denied first (whatever Google's own region detection says), until "Accept". Elsewhere: granted, as before.
+    (function () {
+      var started = false;
+      function startTags() {
+        if (started) return; started = true;
+        if (window.ajwGa4Ready()) gtag('config', window.AJW_TAGS.ga4, {'cookie_expires': 34128000});
+        gtag('config', window.AJW_TAGS.aw);
+      }
+      var cbs = [];
+      window.ajwOnGeo = function (cb) { if (window.AJW_GEO !== undefined) cb(window.AJW_GEO); else cbs.push(cb); };
+      function geoDone(country) {
+        if (window.AJW_GEO !== undefined) return;
+        country = /^[A-Z]{2}$/.test(country = String(country || '').toUpperCase()) ? country : '';
+        window.AJW_GEO = country;
+        if (!country || window.AJW_CONSENT_REGIONS.indexOf(country) !== -1) {
+          gtag('consent', 'update', {
+            'analytics_storage': 'denied', 'ad_storage': 'denied', 'ad_user_data': 'denied', 'ad_personalization': 'denied'
+          });
+        }
+        startTags();
+        while (cbs.length) cbs.shift()(country);
+      }
+      var stored = null;
+      try { stored = JSON.parse(localStorage.getItem('ajw_cookie_consent_v2')); } catch (e) {}
+      if (stored && (stored.v === 'granted' || stored.v === 'denied') && Date.now() - stored.t < 15724800000) { startTags(); return; }
+      var cached = null;
+      try { cached = sessionStorage.getItem('ajw_geo'); } catch (e) {}
+      if (cached !== null) { geoDone(cached); return; }
+      if (!window.fetch || !/^https?:$/.test(location.protocol)) { geoDone(''); return; }
+      setTimeout(function () { geoDone(''); }, 2000);
+      fetch('/api/geo/', { credentials: 'omit' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) {
+          var c = (d && d.country) || '';
+          if (window.AJW_GEO === undefined) { try { sessionStorage.setItem('ajw_geo', c); } catch (e) {} }
+          geoDone(c);
+        })
+        .catch(function () { geoDone(''); });
+    })();
   </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18529460502"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Tâmaras Ajwa por grosso | Fornecedor de Ajwa de Medina</title>
-  <meta name="description" content="Tâmaras Ajwa por grosso: Ajwa de Medina premium em caixas a granel, embalagens a vácuo, formatos de retalho e marca própria para importadores e distribuidores. Peça orçamento no WhatsApp.">
+  <title>Tâmaras Ajwa por atacado (por grosso) | Fornecedor de Medina</title>
+  <meta name="description" content="Tâmaras Ajwa por atacado (por grosso): Ajwa de Medina premium a granel, embaladas a vácuo, para varejo/retalho e marca própria, para importadores e distribuidores. Peça seu orçamento no WhatsApp.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <meta name="theme-color" content="#1b110b">
   <!-- Domain is set in tools/build.py (SITE). EN = /, FR = /fr/, ES = /es/ -->
@@ -58,8 +97,8 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Tâmaras Ajwa por Grosso">
   <meta property="og:url" content="https://ajwadateswholesale.vercel.app/pt/">
-  <meta property="og:title" content="Tâmaras Ajwa por grosso — fornecedor de tâmaras Ajwa de Medina para compradores B2B">
-  <meta property="og:description" content="Tâmaras Ajwa de Medina por grosso (atacado): granel, vácuo, formatos de retalho, marca própria. Preços de grosso competitivos e exportação. Orçamento no WhatsApp.">
+  <meta property="og:title" content="Tâmaras Ajwa por atacado (por grosso) — fornecedor de Ajwa de Medina para compradores B2B">
+  <meta property="og:description" content="Tâmaras Ajwa de Medina por atacado (por grosso): a granel, a vácuo, formatos para varejo/retalho, marca própria. Preços de atacado competitivos e exportação. Orçamento no WhatsApp.">
   <meta property="og:locale" content="pt_PT">
   <meta property="og:locale:alternate" content="en_US">
   <meta property="og:locale:alternate" content="fr_FR">
@@ -67,17 +106,17 @@
   <meta property="og:image" content="https://ajwadateswholesale.vercel.app/images/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Tâmaras Ajwa por grosso — tâmaras Ajwa escuras num prato">
+  <meta property="og:image:alt" content="Tâmaras Ajwa por atacado — tâmaras Ajwa escuras num prato">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Tâmaras Ajwa por grosso — fornecedor de tâmaras Ajwa de Medina para compradores B2B">
-  <meta name="twitter:description" content="Tâmaras Ajwa de Medina por grosso (atacado): granel, vácuo, formatos de retalho, marca própria. Preços de grosso competitivos e exportação. Orçamento no WhatsApp.">
+  <meta name="twitter:title" content="Tâmaras Ajwa por atacado (por grosso) — fornecedor de Ajwa de Medina para compradores B2B">
+  <meta name="twitter:description" content="Tâmaras Ajwa de Medina por atacado (por grosso): a granel, a vácuo, formatos para varejo/retalho, marca própria. Preços de atacado competitivos e exportação. Orçamento no WhatsApp.">
   <meta name="twitter:image" content="https://ajwadateswholesale.vercel.app/images/og-image.jpg">
-  <meta name="twitter:image:alt" content="Tâmaras Ajwa por grosso — tâmaras Ajwa escuras num prato">
+  <meta name="twitter:image:alt" content="Tâmaras Ajwa por atacado — tâmaras Ajwa escuras num prato">
 
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../images/apple-touch-icon.png">
   <link rel="preload" as="image" href="../images/dattes-ajwa-en-gros-800.webp" imagesrcset="../images/dattes-ajwa-en-gros-480.webp 480w, ../images/dattes-ajwa-en-gros-800.webp 800w" imagesizes="(min-width: 960px) 40vw, 88vw" fetchpriority="high">
-  <link rel="stylesheet" href="../css/style.css?v=20261028b">
+  <link rel="stylesheet" href="../css/style.css?v=20261028c">
 
   <script type="application/ld+json">
 {
@@ -133,23 +172,23 @@
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Vendem tâmaras Ajwa por grosso?",
+      "name": "Vocês vendem tâmaras Ajwa por atacado?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sim. Somos um fornecedor de tâmaras Ajwa por grosso (atacado) para empresas: importadores, distribuidores, retalhistas, grossistas e marcas. Envie-nos uma mensagem no WhatsApp com o volume, a embalagem e o destino."
+        "text": "Sim. Somos fornecedor de tâmaras Ajwa por atacado (por grosso) para empresas: importadores, distribuidores, varejistas, atacadistas e marcas. Envie uma mensagem no WhatsApp com o volume, a embalagem e o destino."
       }
     },
     {
       "@type": "Question",
-      "name": "De onde vêm as vossas tâmaras Ajwa?",
+      "name": "De onde vêm as suas tâmaras Ajwa?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A Ajwa é uma variedade de Medina, na Arábia Saudita, onde é cultivada quase exclusivamente. Falamos consigo da origem e dos documentos disponíveis antes de cada encomenda."
+        "text": "A Ajwa é uma variedade de Medina, na Arábia Saudita, onde é cultivada quase exclusivamente. Falamos com você sobre a origem e os documentos disponíveis antes de cada pedido."
       }
     },
     {
       "@type": "Question",
-      "name": "Quando é a época de colheita da Ajwa?",
+      "name": "Quando é a safra da Ajwa?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "Em Medina, a Ajwa é normalmente colhida do fim de julho a setembro, com o pico geralmente em agosto. As datas exatas variam de ano para ano conforme o clima."
@@ -157,34 +196,34 @@
     },
     {
       "@type": "Question",
-      "name": "As tâmaras Ajwa estão disponíveis todo o ano?",
+      "name": "As tâmaras Ajwa estão disponíveis o ano todo?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sim. Graças a uma boa embalagem e à conservação a frio, as tâmaras Ajwa por grosso estão disponíveis durante todo o ano, também fora do período de colheita."
+        "text": "Sim. Graças a uma boa embalagem e à conservação a frio, as tâmaras Ajwa por atacado estão disponíveis o ano todo, também fora do período de colheita."
       }
     },
     {
       "@type": "Question",
-      "name": "Que embalagens oferecem?",
+      "name": "Quais embalagens vocês oferecem?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Caixas a granel, embalagens a vácuo, formatos de retalho (caixas, saquetas) e marca própria. Pesos e calibres são acordados consigo, de acordo com o seu mercado."
+        "text": "Caixas a granel, embalagens a vácuo, formatos para varejo/retalho (caixas, sachês) e marca própria. Pesos e calibres são combinados com você, de acordo com o seu mercado."
       }
     },
     {
       "@type": "Question",
-      "name": "Qual é o preço por grosso e a encomenda mínima?",
+      "name": "Como é definido o preço de atacado?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Os preços e as quantidades mínimas dependem do calibre, da embalagem, do volume e do destino. Envie-nos o seu pedido no WhatsApp para receber um orçamento."
+        "text": "Os preços e as quantidades dependem do calibre, da embalagem, do volume e do destino. Envie o seu pedido pelo WhatsApp para receber um orçamento."
       }
     },
     {
       "@type": "Question",
-      "name": "Exportam tâmaras Ajwa?",
+      "name": "Vocês exportam tâmaras Ajwa?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Sim, a exportação está disponível a pedido. Documentos, certificados e condições de entrega são analisados em cada encomenda, conforme o país de destino."
+        "text": "Sim, a exportação está disponível sob pedido. Documentos, certificados e condições de entrega são analisados em cada pedido, conforme o país de destino."
       }
     },
     {
@@ -192,7 +231,7 @@
       "name": "Como reconhecer tâmaras Ajwa autênticas?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A Ajwa é uma tâmara pequena a média, castanho muito escuro a preta, com polpa macia e pele finamente enrugada. Numa compra por grosso, o aspeto não basta: peça sempre a origem e os documentos do lote."
+        "text": "A Ajwa é uma tâmara pequena a média, marrom muito escuro a preta, com polpa macia e casca finamente enrugada. Numa compra por atacado, a aparência não basta: peça sempre ao fornecedor a origem e os documentos do lote."
       }
     }
   ]
@@ -218,7 +257,7 @@
         <a href="#faq">Perguntas</a>
       </nav>
       <div class="header__actions">
-        <a class="btn btn--wa btn--sm header__wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="header"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
+        <a class="btn btn--wa btn--sm header__wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="header"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>WhatsApp</span></a>
         <button class="burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Abrir menu"><span></span><span></span><span></span></button>
       </div>
     </div>
@@ -229,17 +268,17 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="container hero__grid">
         <div class="hero__text">
-          <p class="eyebrow eyebrow--light">Fornecedor de tâmaras Ajwa por grosso · Só B2B</p>
-          <h1 id="hero-title">Tâmaras Ajwa por grosso, de Medina para o seu negócio</h1>
-          <p class="hero__lead">Fornecedor de tâmaras Ajwa premium para importadores, distribuidores, retalhistas e grossistas: autênticas tâmaras Ajwa de Medina a granel, selecionadas e embaladas para revenda, com preços de grosso competitivos.</p>
+          <p class="eyebrow eyebrow--light">Fornecedor de tâmaras Ajwa por atacado · Só B2B</p>
+          <h1 id="hero-title">Tâmaras Ajwa por atacado (por grosso), de Medina para a sua empresa</h1>
+          <p class="hero__lead">Fornecedor de tâmaras Ajwa premium para importadores, distribuidores, varejistas e atacadistas: autênticas tâmaras Ajwa de Medina a granel, selecionadas e embaladas para revenda, com preços de atacado competitivos.</p>
           <ul class="hero__points">
-            <li>Ajwa de Medina, selecionada para o comércio por grosso</li>
-            <li>Caixas a granel, embalagens a vácuo, formatos de retalho ou marca própria</li>
-            <li>Fornecimento fiável durante todo o ano e exportação a pedido</li>
+            <li>Ajwa de Medina, selecionada para o comércio atacadista</li>
+            <li>Caixas a granel, embalagens a vácuo, formatos para varejo/retalho ou marca própria</li>
+            <li>Fornecimento confiável o ano todo e exportação sob pedido</li>
           </ul>
           <div class="cta-row">
-            <a class="btn btn--wa btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="hero"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Contacte-nos no WhatsApp</span></a>
-            <a class="btn btn--ghost-light btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="hero-quote"><span>Pedir orçamento</span></a>
+            <a class="btn btn--wa btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="hero"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Fale conosco no WhatsApp</span></a>
+            <a class="btn btn--ghost-light btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="hero-quote"><span>Pedir orçamento</span></a>
           </div>
           <p class="hero__note">Respondemos no WhatsApp com preços, disponibilidade e condições de envio para o seu volume.</p>
         </div>
@@ -258,9 +297,9 @@
     <section class="trust" aria-label="Os nossos compromissos">
       <ul class="container trust__list">
         <li><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-6.1-6.5-11a6.5 6.5 0 0 1 13 0c0 4.9-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/></g></svg><div><strong>Origem: Medina</strong><span>A variedade Ajwa, natural de Medina</span></div></li>
-        <li><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></g></svg><div><strong>Volumes de grosso</strong><span>Caixas a granel e encomendas regulares</span></div></li>
+        <li><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 7.5 12 3l8.5 4.5v9L12 21l-8.5-4.5z"/><path d="M3.5 7.5 12 12l8.5-4.5M12 12v9"/></g></svg><div><strong>Volumes de atacado</strong><span>Caixas a granel e pedidos recorrentes</span></div></li>
         <li><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5v19M4 7l16 10M20 7 4 17"/><path d="m9.5 4 2.5 2 2.5-2M9.5 20l2.5-2 2.5 2"/></g></svg><div><strong>Disponível todo o ano</strong><span>Graças à conservação a frio</span></div></li>
-        <li><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18l-2.5 5h-13z"/><path d="M6 15V8h12v7M9 8V4h6v4"/></g></svg><div><strong>Exportação a pedido</strong><span>Para compradores profissionais</span></div></li>
+        <li><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15h18l-2.5 5h-13z"/><path d="M6 15V8h12v7M9 8V4h6v4"/></g></svg><div><strong>Exportação sob pedido</strong><span>Para compradores profissionais</span></div></li>
       </ul>
     </section>
 
@@ -275,10 +314,10 @@
           <p class="eyebrow">Sobre a Ajwa e a origem</p>
           <h2 id="about-title">Tâmaras Ajwa de Medina: uma variedade única</h2>
           <p class="lead">A Ajwa é a tâmara emblemática de Medina (Al-Madinah Al-Munawwarah), na Arábia Saudita. De tamanho pequeno a médio e cor castanho muito escuro, quase preta, tem polpa macia e uma doçura suave e delicada em comparação com muitas outras variedades.</p>
-          <p>Muito procurada pelo seu valor cultural e espiritual, sobretudo no Ramadão, no Hajj e na Umrah, a Ajwa autêntica é cultivada quase exclusivamente na região de Medina. Por isso, a origem e a seleção da qualidade são tão importantes para os compradores por grosso.</p>
+          <p>Muito procurada pelo seu valor cultural e espiritual, sobretudo no Ramadã (Ramadão), no Hajj e na Umrah, a Ajwa autêntica é cultivada quase exclusivamente na região de Medina. Por isso, a origem e a seleção da qualidade são tão importantes para os compradores atacadistas.</p>
           <div class="pillars">
-            <div class="pillar"><span class="pillar__n">01</span><h3>Autenticidade</h3><p>Tâmaras Ajwa de Medina, com informação de origem e os documentos disponíveis partilhados antes de cada encomenda.</p></div>
-            <div class="pillar"><span class="pillar__n">02</span><h3>Seleção de qualidade</h3><p>Fruta escolhida pelo aspeto, calibre e textura, para lotes homogéneos e prontos para revenda.</p></div>
+            <div class="pillar"><span class="pillar__n">01</span><h3>Autenticidade</h3><p>Tâmaras Ajwa de Medina, com informações de origem e os documentos disponíveis compartilhados antes de cada pedido.</p></div>
+            <div class="pillar"><span class="pillar__n">02</span><h3>Seleção de qualidade</h3><p>Frutas escolhidas pela aparência, calibre e textura, para lotes uniformes e prontos para revenda.</p></div>
             <div class="pillar"><span class="pillar__n">03</span><h3>Armazenamento cuidado</h3><p>Embalagem e conservação a frio que protegem a textura macia e a cor escura e intensa da Ajwa.</p></div>
           </div>
         </div>
@@ -291,7 +330,7 @@
         <div class="section__head">
           <p class="eyebrow eyebrow--light">Sazonalidade</p>
           <h2 id="harvest-title">Época de colheita da Ajwa</h2>
-          <p class="section__lead">Em Medina, a Ajwa é normalmente colhida entre o fim do verão e o início do outono: a época começa por volta do fim de julho, a colheita principal decorre geralmente em agosto e prolonga-se por setembro. Graças à conservação a frio, as tâmaras Ajwa por grosso estão disponíveis durante todo o ano.</p>
+          <p class="section__lead">Em Medina, a Ajwa é normalmente colhida entre o fim do verão e o início do outono: a safra começa por volta do fim de julho, a colheita principal acontece geralmente em agosto e se estende por setembro. Graças à conservação a frio, as tâmaras Ajwa por atacado estão disponíveis o ano todo.</p>
         </div>
 
         <figure class="hchart" aria-labelledby="hchart-cap">
@@ -306,27 +345,27 @@
             <li class="hm hm--stock"><span class="hm__name"><span aria-hidden="true">abr</span><span class="sr">abril</span></span><span class="hm__bar"><span class="hm__st">Conservada a frio</span></span><span class="hm__avail" aria-hidden="true"></span></li>
             <li class="hm hm--stock"><span class="hm__name"><span aria-hidden="true">mai</span><span class="sr">maio</span></span><span class="hm__bar"><span class="hm__st">Conservada a frio</span></span><span class="hm__avail" aria-hidden="true"></span></li>
             <li class="hm hm--stock"><span class="hm__name"><span aria-hidden="true">jun</span><span class="sr">junho</span></span><span class="hm__bar"><span class="hm__st">Conservada a frio</span></span><span class="hm__avail" aria-hidden="true"></span></li>
-            <li class="hm hm--early"><span class="hm__name"><span aria-hidden="true">jul</span><span class="sr">julho</span></span><span class="hm__bar"><span class="hm__st">Início da época</span></span><span class="hm__avail" aria-hidden="true"></span></li>
+            <li class="hm hm--early"><span class="hm__name"><span aria-hidden="true">jul</span><span class="sr">julho</span></span><span class="hm__bar"><span class="hm__st">Início da safra</span></span><span class="hm__avail" aria-hidden="true"></span></li>
             <li class="hm hm--peak"><span class="hm__name"><span aria-hidden="true">ago</span><span class="sr">agosto</span></span><span class="hm__bar"><span class="hm__st">Pico da colheita</span></span><span class="hm__avail" aria-hidden="true"></span></li>
             <li class="hm hm--main"><span class="hm__name"><span aria-hidden="true">set</span><span class="sr">setembro</span></span><span class="hm__bar"><span class="hm__st">Colheita principal</span></span><span class="hm__avail" aria-hidden="true"></span></li>
             <li class="hm hm--new"><span class="hm__name"><span aria-hidden="true">out</span><span class="sr">outubro</span></span><span class="hm__bar"><span class="hm__st">Nova colheita</span></span><span class="hm__avail" aria-hidden="true"></span></li>
             <li class="hm hm--stock"><span class="hm__name"><span aria-hidden="true">nov</span><span class="sr">novembro</span></span><span class="hm__bar"><span class="hm__st">Conservada a frio</span></span><span class="hm__avail" aria-hidden="true"></span></li>
             <li class="hm hm--stock"><span class="hm__name"><span aria-hidden="true">dez</span><span class="sr">dezembro</span></span><span class="hm__bar"><span class="hm__st">Conservada a frio</span></span><span class="hm__avail" aria-hidden="true"></span></li>
           </ol>
-          <p class="hchart__avail"><span class="dot dot--avail" aria-hidden="true"></span>Disponível todo o ano para encomendas por grosso (stock conservado a frio)</p>
+          <p class="hchart__avail"><span class="dot dot--avail" aria-hidden="true"></span>Disponível o ano todo para pedidos por atacado (estoque conservado a frio)</p>
           <ul class="hchart__legend" aria-label="Legenda do calendário">
-            <li><span class="sw sw--early" aria-hidden="true"></span>Início da época</li>
+            <li><span class="sw sw--early" aria-hidden="true"></span>Início da safra</li>
             <li><span class="sw sw--peak" aria-hidden="true"></span>Pico da colheita</li>
             <li><span class="sw sw--main" aria-hidden="true"></span>Colheita principal</li>
             <li><span class="sw sw--new" aria-hidden="true"></span>Nova colheita embalada</li>
-            <li><span class="sw sw--stock" aria-hidden="true"></span>Stock conservado a frio</li>
+            <li><span class="sw sw--stock" aria-hidden="true"></span>Estoque conservado a frio</li>
           </ul>
-          <p class="hchart__note">Calendário indicativo: as datas exatas variam todos os anos conforme o clima e os pomares. Confirme a disponibilidade atual no WhatsApp.</p>
+          <p class="hchart__note">Calendário indicativo: as datas exatas variam a cada ano conforme o clima e os pomares. Confirme a disponibilidade atual no WhatsApp.</p>
         </figure>
 
         <div class="harvest__cards">
           <article class="hcard"><h3>Período de colheita</h3><p>Em geral, do fim de julho a setembro em Medina, conforme o ano. A fruta é colhida na fase tamr (totalmente madura e seca).</p></article>
-          <article class="hcard"><h3>Melhor qualidade</h3><p>O coração da época, normalmente agosto, traz a maior escolha de fruta da nova colheita: o melhor momento para reservar volumes da nova colheita.</p></article>
+          <article class="hcard"><h3>Melhor qualidade</h3><p>O auge da safra, normalmente em agosto, traz a maior variedade de frutas da nova colheita: o melhor momento para reservar volumes da nova colheita.</p></article>
           <article class="hcard"><h3>Disponibilidade todo o ano</h3><p>Bem embalada e conservada a frio, a Ajwa mantém a textura e a cor, por isso o fornecimento continua estável fora do período de colheita.</p></article>
         </div>
 
@@ -334,8 +373,8 @@
           <img src="../images/recolte-dattes-ajwa-1200.webp" srcset="../images/recolte-dattes-ajwa-640.webp 640w, ../images/recolte-dattes-ajwa-1200.webp 1200w" sizes="(min-width: 960px) 50vw, 92vw" width="1200" height="800" alt="Caixas de tâmaras acabadas de colher sobre uma palete num palmar" loading="lazy" decoding="async">
           <div>
             <h3>Antecipe os picos de procura</h3>
-            <p>A procura sobe muito antes do Ramadão, que se antecipa todos os anos, e na altura do Hajj e da Umrah. Para esses períodos, planeie as suas encomendas por grosso com bastante antecedência.</p>
-            <a class="btn btn--wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="harvest"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Ver disponibilidade</span></a>
+            <p>A demanda sobe muito antes do Ramadã (Ramadão), que se antecipa a cada ano, e na época do Hajj e da Umrah. Para esses períodos, planeje os seus pedidos por atacado com bastante antecedência.</p>
+            <a class="btn btn--wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="harvest"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Ver disponibilidade</span></a>
           </div>
         </div>
       </div>
@@ -346,17 +385,17 @@
       <div class="container">
         <div class="section__head">
           <p class="eyebrow">Produtos e embalagens</p>
-          <h2 id="products-title">Tâmaras Ajwa por grosso: escolha a embalagem</h2>
-          <p class="section__lead">Formatos pensados para importação, distribuição e retalho. Pesos, calibres e quantidades são acordados consigo, de acordo com o seu mercado.</p>
+          <h2 id="products-title">Tâmaras Ajwa por atacado (por grosso): escolha a embalagem</h2>
+          <p class="section__lead">Formatos pensados para importação, distribuição e varejo/retalho. Pesos, calibres e quantidades são combinados com você, de acordo com o seu mercado.</p>
         </div>
         <div class="products__grid">
           <article class="pcard pcard--feature">
-            <img src="../images/dattes-ajwa-premium-800.webp" srcset="../images/dattes-ajwa-premium-480.webp 480w, ../images/dattes-ajwa-premium-800.webp 800w" sizes="(min-width: 960px) 30vw, 92vw" width="800" height="610" alt="Tâmaras escuras e carnudas numa taça branca, exemplo de formato de retalho" loading="lazy" decoding="async">
+            <img src="../images/dattes-ajwa-premium-800.webp" srcset="../images/dattes-ajwa-premium-480.webp 480w, ../images/dattes-ajwa-premium-800.webp 800w" sizes="(min-width: 960px) 30vw, 92vw" width="800" height="610" alt="Tâmaras escuras e carnudas numa tigela branca, exemplo de formato para varejo/retalho" loading="lazy" decoding="async">
             <div class="pcard__body">
               <span class="tag">Granel</span>
-              <h3>Caixas a granel para grossistas</h3>
-              <p>Tâmaras Ajwa em caixas de exportação a granel, para venda avulsa, distribuição ou reembalagem.</p>
-              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-bulk"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Encomendar por grosso</span></a>
+              <h3>Caixas a granel para atacadistas</h3>
+              <p>Tâmaras Ajwa em caixas de exportação a granel, para venda a granel, distribuição ou reembalagem.</p>
+              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-bulk"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir por atacado</span></a>
             </div>
           </article>
           <article class="pcard">
@@ -364,17 +403,17 @@
             <div class="pcard__body">
               <span class="tag">Vácuo</span>
               <h3>Embalagens a vácuo</h3>
-              <p>Embalagem que protege a frescura e a textura macia da Ajwa, ideal para cadeias de distribuição longas.</p>
-              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-vacuum"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir orçamento</span></a>
+              <p>Embalagem que protege o frescor e a textura macia da Ajwa, ideal para cadeias de distribuição longas.</p>
+              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-vacuum"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir orçamento</span></a>
             </div>
           </article>
           <article class="pcard">
             <div class="pcard__icon"><svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l-1.2 12.5H6.2z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></g></svg></div>
             <div class="pcard__body">
-              <span class="tag">Retalho</span>
-              <h3>Formatos de retalho</h3>
-              <p>Caixas e saquetas prontas para a prateleira, para mercearias, supermercados, lojas online e cabazes de oferta.</p>
-              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-retail"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir orçamento</span></a>
+              <span class="tag">Varejo</span>
+              <h3>Formatos para varejo/retalho</h3>
+              <p>Caixas e sachês prontos para a prateleira, para mercearias, supermercados, lojas online e cestas de presente.</p>
+              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-retail"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir orçamento</span></a>
             </div>
           </article>
           <article class="pcard">
@@ -382,12 +421,12 @@
             <div class="pcard__body">
               <span class="tag">Marca própria</span>
               <h3>Marca própria</h3>
-              <p>Tâmaras Ajwa com a sua própria marca, com embalagem e rotulagem definidas em conjunto, a pedido.</p>
-              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-private-label"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Contacte-nos no WhatsApp</span></a>
+              <p>Tâmaras Ajwa com a sua própria marca, com embalagem e rotulagem definidas em conjunto, sob pedido.</p>
+              <a class="link-wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="product-private-label"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Fale conosco no WhatsApp</span></a>
             </div>
           </article>
         </div>
-        <p class="products__note">Pesos, calibres, quantidades mínimas e prazos são indicados com o seu orçamento, conforme a embalagem e o destino.</p>
+        <p class="products__note">Pesos, calibres, quantidades e prazos são indicados com o seu orçamento, conforme a embalagem e o destino.</p>
       </div>
     </section>
 
@@ -396,17 +435,17 @@
       <div class="container why__grid">
         <div class="why__intro">
           <p class="eyebrow">Porquê escolher-nos</p>
-          <h2 id="why-title">Um fornecedor de tâmaras Ajwa premium pensado para compradores por grosso</h2>
-          <p>Trabalhamos para compradores B2B: importadores, distribuidores, retalhistas e grossistas que precisam de tâmaras Ajwa premium a granel, de forma regular.</p>
-          <a class="btn btn--wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="why"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Encomendar por grosso</span></a>
+          <h2 id="why-title">Um fornecedor de tâmaras Ajwa premium pensado para compradores atacadistas</h2>
+          <p>Trabalhamos para compradores B2B: importadores, distribuidores, varejistas e atacadistas que precisam de tâmaras Ajwa premium a granel, de forma regular.</p>
+          <a class="btn btn--wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="why"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir por atacado</span></a>
         </div>
         <ol class="why__list">
-          <li><h3>Foco no grosso</h3><p>Uma oferta 100% B2B: volumes de grosso, encomendas regulares e um contacto direto.</p></li>
-          <li><h3>Fornecimento fiável</h3><p>Fornecimento estável durante todo o ano, apoiado na conservação a frio entre colheitas.</p></li>
-          <li><h3>Preços de grosso competitivos</h3><p>Preços de grosso competitivos, ajustados ao seu volume, calibre e embalagem.</p></li>
-          <li><h3>Capacidade de exportação</h3><p>Envio para exportação a pedido, com os documentos necessários analisados em cada encomenda.</p></li>
-          <li><h3>Embalagens flexíveis</h3><p>Granel, vácuo, retalho ou marca própria: um formato para cada canal de venda.</p></li>
-          <li><h3>Contacto direto no WhatsApp</h3><p>Orçamentos, disponibilidade e acompanhamento das encomendas tratados diretamente consigo no WhatsApp.</p></li>
+          <li><h3>Foco no atacado</h3><p>Uma oferta 100% B2B: volumes de atacado, pedidos recorrentes e um contato direto.</p></li>
+          <li><h3>Fornecimento confiável</h3><p>Fornecimento estável o ano todo, apoiado na conservação a frio entre as colheitas.</p></li>
+          <li><h3>Preços de atacado competitivos</h3><p>Preços de atacado competitivos, ajustados ao seu volume, calibre e embalagem.</p></li>
+          <li><h3>Capacidade de exportação</h3><p>Envio para exportação sob pedido, com os documentos necessários analisados em cada pedido.</p></li>
+          <li><h3>Embalagens flexíveis</h3><p>Granel, vácuo, varejo/retalho ou marca própria: um formato para cada canal de venda.</p></li>
+          <li><h3>Contacto direto no WhatsApp</h3><p>Orçamentos, disponibilidade e acompanhamento dos pedidos tratados diretamente com você no WhatsApp.</p></li>
         </ol>
       </div>
     </section>
@@ -417,12 +456,12 @@
         <div class="section__head">
           <p class="eyebrow">Qualidade e certificações</p>
           <h2 id="certs-title">Qualidade das tâmaras Ajwa: os nossos compromissos</h2>
-          <p class="section__lead">Para revenda, cada lote tem de ser homogéneo, limpo e bem conservado. Eis o que verificamos.</p>
+          <p class="section__lead">Para revenda, cada lote precisa ser uniforme, limpo e bem conservado. Veja o que verificamos.</p>
         </div>
         <ul class="quality__grid">
-          <li><h3>Origem rastreável</h3><p>Origem de Medina claramente indicada, com os documentos comprovativos disponíveis partilhados a pedido.</p></li>
-          <li><h3>Triagem e calibragem</h3><p>Seleção por calibre, aspeto da pele e textura, para lotes homogéneos.</p></li>
-          <li><h3>Embalagem higiénica</h3><p>Embalagem limpa e cuidada, adequada tanto a formatos a granel como de retalho.</p></li>
+          <li><h3>Origem rastreável</h3><p>Origem de Medina claramente indicada, com os documentos comprobatórios disponíveis compartilhados sob pedido.</p></li>
+          <li><h3>Triagem e calibragem</h3><p>Seleção por calibre, aparência da casca e textura, para lotes uniformes.</p></li>
+          <li><h3>Embalagem higiénica</h3><p>Embalagem limpa e cuidadosa, adequada tanto para formatos a granel como para varejo/retalho.</p></li>
           <li><h3>Cadeia de frio</h3><p>Conservação a frio para manter a textura macia e a cor escura até ao envio.</p></li>
         </ul>
         <!-- TODO (certifications) : n'ajoutez ici QUE des certifications réellement détenues,
@@ -432,8 +471,8 @@
         </ul>
         -->
         <div class="docs">
-          <p>Certificados, análises laboratoriais e documentos de exportação: revemo-los consigo no WhatsApp, conforme as exigências do seu país e dos seus clientes.</p>
-          <a class="btn btn--outline" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="quality"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir documentos</span></a>
+          <p>Certificados, análises laboratoriais e documentos de exportação: revisamos tudo com você no WhatsApp, conforme as exigências do seu país e dos seus clientes.</p>
+          <a class="btn btn--outline" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="quality"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir documentos</span></a>
         </div>
       </div>
     </section>
@@ -443,13 +482,13 @@
       <div class="container">
         <div class="section__head">
           <p class="eyebrow eyebrow--light">O que os compradores procuram</p>
-          <h2 id="buyers-title">O que os compradores por grosso esperam de um fornecedor de Ajwa</h2>
-          <p class="section__lead">Importadores e distribuidores fazem sempre as mesmas perguntas essenciais. Eis o que esclarecemos logo na primeira mensagem.</p>
+          <h2 id="buyers-title">O que os compradores atacadistas esperam de um fornecedor de Ajwa</h2>
+          <p class="section__lead">Importadores e distribuidores fazem sempre as mesmas perguntas essenciais. Veja o que esclarecemos já na primeira mensagem.</p>
         </div>
         <div class="buyers__grid">
-          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>«É mesmo de Medina?»</h3><p>A Ajwa é muito procurada, por isso a autenticidade vem primeiro. Falamos da origem e dos documentos antes de qualquer encomenda.</p></article>
-          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>«Os lotes são homogéneos?»</h3><p>Calibres e aspeto iguais de uma encomenda para a seguinte, para que a revenda não traga surpresas.</p></article>
-          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>«Posso contar convosco antes do Ramadão?»</h3><p>Fornecimento fiável nos períodos de maior procura, graças ao planeamento e ao stock conservado a frio.</p></article>
+          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>«É mesmo de Medina?»</h3><p>A Ajwa é muito procurada, por isso a autenticidade vem em primeiro lugar. Falamos da origem e dos documentos antes de qualquer pedido.</p></article>
+          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>«Os lotes são uniformes?»</h3><p>Calibres e aparência iguais de um pedido para o outro, para que a revenda não traga surpresas.</p></article>
+          <article class="bcard"><span class="bcard__q" aria-hidden="true">“</span><h3>«Posso contar com vocês antes do Ramadã?»</h3><p>Fornecimento confiável nos períodos de maior demanda, graças ao planejamento e ao estoque conservado a frio.</p></article>
         </div>
         <!-- TODO (témoignages) : remplacer / compléter UNIQUEMENT par de vrais avis clients, avec leur accord.
         <figure class="testimonial">
@@ -465,19 +504,19 @@
       <div class="container markets__grid">
         <div>
           <p class="eyebrow">Mercados</p>
-          <h2 id="markets-title">Mercados: tâmaras Ajwa por grosso para empresas de todo o mundo</h2>
-          <p>Fornecemos compradores profissionais em todo o mundo, tanto para volumes a granel como para encomendas de distribuição mais específicas.</p>
+          <h2 id="markets-title">Mercados: tâmaras Ajwa por atacado para empresas do mundo todo</h2>
+          <p>Atendemos compradores profissionais no mundo todo, tanto para volumes a granel como para pedidos de distribuição mais específicos.</p>
         </div>
         <div>
           <ul class="chips">
             <li>Importadores</li>
             <li>Distribuidores</li>
-            <li>Retalhistas e supermercados</li>
-            <li>Grossistas</li>
+            <li>Varejistas e supermercados</li>
+            <li>Atacadistas</li>
             <li>Marcas próprias</li>
           </ul>
-          <p class="markets__export">Exportação a pedido: destino, documentos e condições de entrega analisados em cada encomenda.</p>
-          <a class="btn btn--wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="markets"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir orçamento</span></a>
+          <p class="markets__export">Exportação sob pedido: destino, documentos e condições de entrega analisados em cada pedido.</p>
+          <a class="btn btn--wa" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="markets"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Pedir orçamento</span></a>
         </div>
       </div>
     </section>
@@ -487,40 +526,40 @@
       <div class="container container--narrow">
         <div class="section__head">
           <p class="eyebrow">Perguntas frequentes</p>
-          <h2 id="faq-title">Perguntas frequentes: tâmaras Ajwa por grosso</h2>
+          <h2 id="faq-title">Perguntas frequentes: tâmaras Ajwa por atacado</h2>
         </div>
         <div class="faq__list">
           <details class="faq__item" open>
-            <summary><h3>Vendem tâmaras Ajwa por grosso?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p>Sim. Somos um fornecedor de tâmaras Ajwa por grosso (atacado) para empresas: importadores, distribuidores, retalhistas, grossistas e marcas. Envie-nos uma mensagem no WhatsApp com o volume, a embalagem e o destino.</p>
+            <summary><h3>Vocês vendem tâmaras Ajwa por atacado?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
+            <p>Sim. Somos fornecedor de tâmaras Ajwa por atacado (por grosso) para empresas: importadores, distribuidores, varejistas, atacadistas e marcas. Envie uma mensagem no WhatsApp com o volume, a embalagem e o destino.</p>
           </details>
           <details class="faq__item">
-            <summary><h3>De onde vêm as vossas tâmaras Ajwa?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p>A Ajwa é uma variedade de Medina, na Arábia Saudita, onde é cultivada quase exclusivamente. Falamos consigo da origem e dos documentos disponíveis antes de cada encomenda.</p>
+            <summary><h3>De onde vêm as suas tâmaras Ajwa?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
+            <p>A Ajwa é uma variedade de Medina, na Arábia Saudita, onde é cultivada quase exclusivamente. Falamos com você sobre a origem e os documentos disponíveis antes de cada pedido.</p>
           </details>
           <details class="faq__item">
-            <summary><h3>Quando é a época de colheita da Ajwa?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
+            <summary><h3>Quando é a safra da Ajwa?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
             <p>Em Medina, a Ajwa é normalmente colhida do fim de julho a setembro, com o pico geralmente em agosto. As datas exatas variam de ano para ano conforme o clima.</p>
           </details>
           <details class="faq__item">
-            <summary><h3>As tâmaras Ajwa estão disponíveis todo o ano?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p>Sim. Graças a uma boa embalagem e à conservação a frio, as tâmaras Ajwa por grosso estão disponíveis durante todo o ano, também fora do período de colheita.</p>
+            <summary><h3>As tâmaras Ajwa estão disponíveis o ano todo?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
+            <p>Sim. Graças a uma boa embalagem e à conservação a frio, as tâmaras Ajwa por atacado estão disponíveis o ano todo, também fora do período de colheita.</p>
           </details>
           <details class="faq__item">
-            <summary><h3>Que embalagens oferecem?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p>Caixas a granel, embalagens a vácuo, formatos de retalho (caixas, saquetas) e marca própria. Pesos e calibres são acordados consigo, de acordo com o seu mercado.</p>
+            <summary><h3>Quais embalagens vocês oferecem?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
+            <p>Caixas a granel, embalagens a vácuo, formatos para varejo/retalho (caixas, sachês) e marca própria. Pesos e calibres são combinados com você, de acordo com o seu mercado.</p>
           </details>
           <details class="faq__item">
-            <summary><h3>Qual é o preço por grosso e a encomenda mínima?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p>Os preços e as quantidades mínimas dependem do calibre, da embalagem, do volume e do destino. Envie-nos o seu pedido no WhatsApp para receber um orçamento.</p>
+            <summary><h3>Como é definido o preço de atacado?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
+            <p>Os preços e as quantidades dependem do calibre, da embalagem, do volume e do destino. Envie o seu pedido pelo WhatsApp para receber um orçamento.</p>
           </details>
           <details class="faq__item">
-            <summary><h3>Exportam tâmaras Ajwa?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p>Sim, a exportação está disponível a pedido. Documentos, certificados e condições de entrega são analisados em cada encomenda, conforme o país de destino.</p>
+            <summary><h3>Vocês exportam tâmaras Ajwa?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
+            <p>Sim, a exportação está disponível sob pedido. Documentos, certificados e condições de entrega são analisados em cada pedido, conforme o país de destino.</p>
           </details>
           <details class="faq__item">
             <summary><h3>Como reconhecer tâmaras Ajwa autênticas?</h3><span class="faq__icon" aria-hidden="true"></span></summary>
-            <p>A Ajwa é uma tâmara pequena a média, castanho muito escuro a preta, com polpa macia e pele finamente enrugada. Numa compra por grosso, o aspeto não basta: peça sempre a origem e os documentos do lote.</p>
+            <p>A Ajwa é uma tâmara pequena a média, marrom muito escuro a preta, com polpa macia e casca finamente enrugada. Numa compra por atacado, a aparência não basta: peça sempre ao fornecedor a origem e os documentos do lote.</p>
           </details>
         </div>
       </div>
@@ -529,13 +568,13 @@
     <!-- FINAL CTA -->
     <section class="final" id="contact" aria-labelledby="final-title">
       <div class="container final__inner">
-        <h2 id="final-title">Pronto para encomendar tâmaras Ajwa por grosso?</h2>
-        <p>Indique-nos o volume, a embalagem e o destino, e respondemos no WhatsApp com uma proposta à sua medida.</p>
+        <h2 id="final-title">Pronto para pedir tâmaras Ajwa por atacado?</h2>
+        <p>Informe o volume, a embalagem e o destino, e respondemos no WhatsApp com uma proposta sob medida.</p>
         <div class="cta-row cta-row--center">
-          <a class="btn btn--wa btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Contacte-nos no WhatsApp</span></a>
-          <a class="btn btn--ghost-light btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final-order"><span>Encomendar por grosso</span></a>
+          <a class="btn btn--wa btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Fale conosco no WhatsApp</span></a>
+          <a class="btn btn--ghost-light btn--lg" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final-order"><span>Pedir por atacado</span></a>
         </div>
-        <p class="final__phone">WhatsApp : <a href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final-number">+212 664 738 219</a></p>
+        <p class="final__phone">WhatsApp : <a href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="final-number">+212 664 738 219</a></p>
       </div>
     </section>
   </main>
@@ -544,20 +583,20 @@
     <div class="container footer__grid">
       <div>
         <p class="brand brand--footer"><img src="../favicon.svg" alt="" width="32" height="32" loading="lazy"><span class="brand__txt">Tâmaras Ajwa <em>por Grosso</em></span></p>
-        <p class="footer__tag">Fornecedor de tâmaras Ajwa por grosso para importadores, distribuidores e retalhistas. Ajwa de Medina a granel, em embalagens a vácuo, formatos de retalho e marca própria.</p>
+        <p class="footer__tag">Fornecedor de tâmaras Ajwa por atacado (por grosso) para importadores, distribuidores e varejistas. Ajwa de Medina a granel, em embalagens a vácuo, formatos para varejo/retalho e marca própria.</p>
       </div>
       <nav aria-label="Informação">
         <p class="footer__h">Informação</p>
         <ul class="footer__links">
           <li><a href="#about-ajwa">Sobre a Ajwa</a></li>
-          <li><a href="#harvest">Época de colheita</a></li>
+          <li><a href="#harvest">Época da safra</a></li>
           <li><a href="#certifications">Certificações</a></li>
           <li><a href="#markets">Mercados</a></li>
         </ul>
       </nav>
       <div>
-        <p class="footer__h">Contacto</p>
-        <a class="btn btn--wa btn--sm" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="footer"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Contacte-nos no WhatsApp</span></a>
+        <p class="footer__h">Contato</p>
+        <a class="btn btn--wa btn--sm" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="footer"><svg class="i-wa" viewBox="0 0 32 32" width="20" height="20" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg><span>Fale conosco no WhatsApp</span></a>
         <nav class="lang lang--footer" aria-label="Escolher idioma">
           <a href="../" hreflang="en" lang="en">EN</a>
           <a href="../fr/" hreflang="fr" lang="fr">FR</a>
@@ -572,9 +611,9 @@
     </div>
   </footer>
 
-  <a class="wa-float" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20grosso." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="floating" aria-label="Contacte-nos no WhatsApp (abre num novo separador)"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg></a>
+  <a class="wa-float" href="https://wa.me/212664738219?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20de%20t%C3%A2maras%20Ajwa%20por%20atacado." target="_blank" rel="noopener" data-cta="whatsapp" data-cta-location="floating" aria-label="Fale conosco no WhatsApp (abre numa nova aba)"><svg viewBox="0 0 32 32" width="30" height="30" aria-hidden="true" focusable="false"><use href="#i-wa"/></svg></a>
 
-  <script src="../js/main.js?v=20261028b" defer></script>
-  <script src="../js/analytics.js?v=20261028b" defer></script>
+  <script src="../js/main.js?v=20261028c" defer></script>
+  <script src="../js/analytics.js?v=20261028c" defer></script>
 </body>
 </html>
