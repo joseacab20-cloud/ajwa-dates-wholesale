@@ -203,7 +203,9 @@
       "oct.",
       "nov.",
       "déc."
-    ]
+    ],
+    "footer.privacy": "Politique de confidentialité",
+    "footer.cookies": "Gérer les cookies"
   },
   "en": {
     "meta.title": "Ajwa Dates Wholesale | Bulk Madinah Ajwa Supplier",
@@ -409,7 +411,9 @@
       "Oct",
       "Nov",
       "Dec"
-    ]
+    ],
+    "footer.privacy": "Privacy policy",
+    "footer.cookies": "Manage cookies"
   },
   "es": {
     "meta.title": "Dátiles Ajwa al por mayor | Proveedor de Ajwa de Medina",
@@ -615,6 +619,8 @@
       "oct",
       "nov",
       "dic"
-    ]
+    ],
+    "footer.privacy": "Política de privacidad",
+    "footer.cookies": "Gestionar cookies"
   }
 }
